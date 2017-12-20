@@ -15,7 +15,7 @@ c_forward_list *c_forward_list_create(void)
 
 // Удаляет односвязный список.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*_del_func(void *const _data)))
+ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_func(void *const _data)))
 {
     if (_list == NULL) return -1;
 
@@ -80,7 +80,7 @@ void *c_forward_list_front_data(c_forward_list *const _list)
 
 // Вынимает из начала списка узел, уничтожая его.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*_del_func(void *const _data)))
+ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*const _del_func(void *const _data)))
 {
     if (_list == NULL) return -1;
     if (_list->nodes_count == 0) return -2;
