@@ -13,7 +13,7 @@ typedef struct s_c_forward_list
 } c_forward_list;
 
 /* Формат узла односвязного списка:
- *                                  |_____void *next_____|_____uint8_t *data_____|
+ *                                  |_____void *next_____|_____uint8_t data_____|
  * Указатель на узел указывает сюда ^
  */
 
