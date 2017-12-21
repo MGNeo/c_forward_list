@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <time.h>
@@ -26,26 +26,26 @@ size_t comp(void *const _data)
 
 int main()
 {
-    // Создание односвязного листа.
+    // РЎРѕР·РґР°РЅРёРµ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ Р»РёСЃС‚Р°.
     c_forward_list *forward_list = c_forward_list_create();
 
-    // Вставка в конец списка 15 элементов.
+    // Р’СЃС‚Р°РІРєР° РІ РєРѕРЅРµС† СЃРїРёСЃРєР° 15 СЌР»РµРјРµРЅС‚РѕРІ.
     for (size_t i = 0; i < 15; ++i)
     {
         *( (float*) c_forward_list_push_back(forward_list, sizeof(float)) ) = (i % 4) * 4;
     }
 
-    // Печать содержимого.
+    // РџРµС‡Р°С‚СЊ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ.
     print_stats(forward_list);
 
-    // Удаление элементов, данные которых < 5.f.
+    // РЈРґР°Р»РµРЅРёРµ СЌР»РµРјРµРЅС‚РѕРІ, РґР°РЅРЅС‹Рµ РєРѕС‚РѕСЂС‹С… < 5.f.
     const size_t count = c_forward_list_erase_few(forward_list, comp, NULL);
     printf("Deleted count = %Iu\n", count);
 
-    // Печать содержимого.
+    // РџРµС‡Р°С‚СЊ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ.
     print_stats(forward_list);
 
-    // Удаление списка.
+    // РЈРґР°Р»РµРЅРёРµ СЃРїРёСЃРєР°.
     c_forward_list_delete(forward_list, NULL);
     forward_list = NULL;
 
