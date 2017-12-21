@@ -29,7 +29,7 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_f
             while(select_node != NULL)
             {
                 delete_node = select_node;
-                select_node = *(void**)select_node;
+                select_node = *((void**)select_node);
 
                 _del_func((uint8_t*)delete_node + sizeof(void*));
 
@@ -39,7 +39,7 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_f
             while(select_node != NULL)
             {
                 delete_node = select_node;
-                select_node = *(void**)select_node;
+                select_node = *((void**)select_node);
 
                 free(delete_node);
             }
@@ -61,24 +61,14 @@ void *c_forward_list_push_front(c_forward_list *const _list, const size_t _data_
     void *new_node = malloc(sizeof(void*) + _data_size);
     if (new_node == NULL) return NULL;
 
-    *( (void**)new_node ) = _list->head;
+    *((void**)new_node) = _list->head;
     _list->head = new_node;
     ++_list->nodes_count;
 
     return (uint8_t*)_list->head + sizeof(void*);
 }
 
-// Возвращает указатель на данные первого узла.
-// В случае ошибки возвращает NULL.
-void *c_forward_list_front_data(c_forward_list *const _list)
-{
-    if (_list == NULL) return NULL;
-    if (_list->nodes_count == 0) return NULL;
-
-    return (uint8_t*)_list->head + sizeof(void*);
-}
-
-// Вынимает из начала списка узел, уничтожая его.
+// Уничтожает начальный узел списка.
 // В случае успеха возвращает > 0, иначе < 0.
 ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*const _del_func(void *const _data)))
 {
@@ -86,7 +76,7 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*const _de
     if (_list->nodes_count == 0) return -2;
 
     void *delete_node = _list->head;
-    _list->head = *( (void**)(_list->head) );// Продумать этот момент.
+    _list->head = *((void**)_list->head);
 
     if (_del_func != NULL)
     {
@@ -98,4 +88,237 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*const _de
     --_list->nodes_count;
 
     return 1;
+}
+
+// Вставляет в конец списка новый узел.
+// В случаеуспеха возвращает указатель на неинициализированные данные.
+// В случае ошибки возвращает NULL.
+void *c_forward_list_push_back(c_forward_list *const _list, const size_t _data_size)
+{
+    if (_list == NULL) return NULL;
+    if (_data_size == 0) return NULL;
+
+    void *new_node = malloc(sizeof(void*) + _data_size);
+    if (new_node == NULL) return NULL;
+
+    if (_list->nodes_count == 0)
+    {
+        _list->head = new_node;
+        *((void**)new_node) = NULL;
+    } else {
+        void *last_node = _list->head;
+        for (size_t i = 1; i < _list->nodes_count; ++i)
+        {
+            last_node = *((void**)last_node);
+        }
+        *((void**)last_node) = new_node;
+        *((void**)new_node) = NULL;
+    }
+
+    ++_list->nodes_count;
+
+    return (uint8_t*)new_node + sizeof(void*);
+}
+
+// Уничтожает последний узел списка.
+// В случае успеха возвращает > 0, иначе < 0.
+ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list, void (*const _del_func(void *const _data)))
+{
+    if (_list == NULL) return -1;
+    if (_list->nodes_count == 0) return -2;
+
+    void *delete_node = _list->head;
+
+    if (_list->nodes_count == 1)
+    {
+        _list->head = NULL;
+    } else{
+        void *prev_node;
+        for (size_t i = 1; i < _list->nodes_count; ++i)
+        {
+            prev_node = delete_node;
+            delete_node = *((void**)delete_node);
+        }
+        *((void**)prev_node) = NULL;
+    }
+
+    if (_del_func != NULL)
+    {
+        _del_func((uint8_t*)delete_node + sizeof(void*));
+    }
+    free(delete_node);
+
+    --_list->nodes_count;
+
+    return 1;
+}
+
+// Возвращает указатель на данные первого узла.
+// В случае ошибки возвращает NULL.
+void *c_forward_list_front(c_forward_list *const _list)
+{
+    if (_list == NULL) return NULL;
+    if (_list->nodes_count == 0) return NULL;
+
+    return (uint8_t*)_list->head + sizeof(void*);
+}
+
+// Возвращает указатель на данные узла с заданным индексом.
+// В случае ошибки возвращает NULL.
+void *c_forward_list_at(c_forward_list *const _list, const size_t _index)
+{
+    if (_list == NULL) return NULL;
+    if (_index >= _list->nodes_count) return NULL;
+    void *select_node = _list->head;
+    for (size_t i = 0; i < _index; ++i)
+    {
+        select_node = *((void**)select_node);
+    }
+
+    return (uint8_t*)select_node + sizeof(void*);
+}
+
+// Возвращает указатель на данные последнего узла.
+// В случае ошибки возвращает NULL.
+void *c_forward_list_back(c_forward_list *const _list)
+{
+    if (_list == NULL) return NULL;
+    if (_list->nodes_count == 0) return NULL;
+
+    void *select_node = _list->head;
+    for (size_t i = 1; i < _list->nodes_count; ++i)
+    {
+        select_node = *((void**)select_node);
+    }
+
+    return (uint8_t*)select_node + sizeof(void*);
+}
+
+// Вставка нового узла с неинициализированными данными заданного размера перед узлом с заданным порядковым номером.
+// В случае успеха возвращает указатель на данные нового узла.
+// В случае ошибки возвращает NULL.
+// Позволяет вставлять в пустой список, если _index = 0;
+void *c_forward_list_insert(c_forward_list *const _list, const size_t _data_size, const size_t _index)
+{
+    if (_list == NULL) return NULL;
+    if (_data_size == 0) return NULL;
+    if (_index > _list->nodes_count) return NULL;
+
+    void *new_node = malloc(sizeof(void*) + _data_size);
+    if (new_node == NULL) return NULL;
+
+    if (_index == 0)
+    {
+        *((void**)new_node) = _list->head;
+        _list->head = new_node;
+    } else {
+        void *next = _list->head,
+             *prev;
+
+        for (size_t i = 0; i < _index; ++i)
+        {
+            prev = next;
+            next = *((void**)next);
+        }
+        *((void**)prev) = new_node;
+        *((void**)new_node) = next;
+    }
+
+    ++_list->nodes_count;
+
+    return (uint8_t*)new_node + sizeof(void*);
+}
+
+// Удаляет узел с заданным порядковым номером.
+// В случае успеха возвращает > 0, иначе < 0.
+ptrdiff_t c_forward_list_erase(c_forward_list *const _list, const size_t _index, void (*const _del_func(void *const _data)))
+{
+    if (_list == NULL) return -1;
+    if (_index >= _list->nodes_count) return -2;
+
+    void *delete_node = _list->head;
+
+    if (_index == 0)
+    {
+        _list->head = *((void**)_list->head);
+    } else{
+        void *prev_node;
+        for (size_t i = 0; i < _index; ++i)
+        {
+            prev_node = delete_node;
+            delete_node = *((void**)delete_node);
+        }
+        *((void**)prev_node) = *((void**)delete_node);
+    }
+
+    if (_del_func != NULL)
+    {
+        _del_func( (uint8_t*)delete_node + sizeof(void*));
+    }
+    free(delete_node);
+
+    --_list->nodes_count;
+
+    return 1;
+}
+
+// Проходит по всему списку и выполняет над данными каждого списка _func.
+// В случае успеха возвращает > 0, иначе < 0.
+ptrdiff_t c_forward_list_for_each(c_forward_list *const _list, void (*const _func(void *const _data)))
+{
+    if (_list == NULL) return -1;
+    if (_func == NULL) return -2;
+    if (_list->nodes_count == 0) return -3;
+
+    void *select_node = _list->head;
+    while(select_node != NULL)
+    {
+        _func((uint8_t*)select_node + sizeof(void*));
+
+        select_node = *((void**)select_node);
+    }
+
+    return 1;
+}
+
+// Удаляет из списка узлы, для данных которых _comp возвращает > 0.
+// Возвращает кол-во удаленных узлов.
+// В случае ошибки возвращает 0.
+size_t c_forward_list_erase_few(c_forward_list *const _list, size_t (*const _comp(void *const _data)),
+                                void (* const _del_func(void *const _data)))
+{
+    if (_list == NULL) return 0;
+    if (_comp == NULL) return 0;
+    if (_list->nodes_count == 0) return 0;
+
+    size_t count = 0;
+
+    void *select_node = _list->head,
+         *prev_node = &_list->head,
+         *next_node = NULL;
+
+    while(select_node != NULL)
+    {
+        next_node = *((void**)select_node);
+
+        if (_comp((uint8_t*)select_node + sizeof(void*)) > 0)
+        {
+            if (_del_func != NULL)
+            {
+                _del_func((uint8_t*)select_node + sizeof(void*));
+            }
+            free(select_node);
+
+            ++count;
+            --_list->nodes_count;
+
+            *((void**)prev_node) = next_node;
+        } else {
+            prev_node = select_node;
+        }
+
+        select_node = next_node;
+    }
+
+    return count;
 }
