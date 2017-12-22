@@ -30,17 +30,16 @@ int main()
     c_forward_list *forward_list = c_forward_list_create();
 
     // Вставка в конец списка 15 элементов.
-    for (size_t i = 0; i < 15; ++i)
-    {
-        *( (float*) c_forward_list_push_back(forward_list, sizeof(float)) ) = (i % 4) * 4;
-    }
+    *( (float*) c_forward_list_insert(forward_list, sizeof(float), 0 ) ) = 1.f;
+    *( (float*) c_forward_list_insert(forward_list, sizeof(float), 1 ) ) = 2.f;
+    *( (float*) c_forward_list_insert(forward_list, sizeof(float), 0 ) ) = 3.f;
+    *( (float*) c_forward_list_insert(forward_list, sizeof(float), 3 ) ) = 4.f;
 
     // Печать содержимого.
     print_stats(forward_list);
 
-    // Удаление элементов, данные которых < 5.f.
-    const size_t count = c_forward_list_erase_few(forward_list, comp, NULL);
-    printf("Deleted count = %Iu\n", count);
+    // Доступ к первому элементу.
+    *( (float*) c_forward_list_front(forward_list) ) = 777.f;
 
     // Печать содержимого.
     print_stats(forward_list);

@@ -101,19 +101,13 @@ void *c_forward_list_push_back(c_forward_list *const _list, const size_t _data_s
     void *new_node = malloc(sizeof(void*) + _data_size);
     if (new_node == NULL) return NULL;
 
-    if (_list->nodes_count == 0)
+    void *last_node = &_list->head;
+    for (size_t i = 0; i < _list->nodes_count; ++i)
     {
-        _list->head = new_node;
-        *((void**)new_node) = NULL;
-    } else {
-        void *last_node = _list->head;
-        for (size_t i = 1; i < _list->nodes_count; ++i)
-        {
-            last_node = *((void**)last_node);
-        }
-        *((void**)last_node) = new_node;
-        *((void**)new_node) = NULL;
+        last_node = *((void**)last_node);
     }
+    *((void**)last_node) = new_node;
+    *((void**)new_node) = NULL;
 
     ++_list->nodes_count;
 
@@ -127,20 +121,14 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list, void (*const _del
     if (_list == NULL) return -1;
     if (_list->nodes_count == 0) return -2;
 
+    void *prev_node = &_list->head;
     void *delete_node = _list->head;
-
-    if (_list->nodes_count == 1)
+    for (size_t i = 1; i < _list->nodes_count; ++i)
     {
-        _list->head = NULL;
-    } else{
-        void *prev_node;
-        for (size_t i = 1; i < _list->nodes_count; ++i)
-        {
-            prev_node = delete_node;
-            delete_node = *((void**)delete_node);
-        }
-        *((void**)prev_node) = NULL;
+        prev_node = delete_node;
+        delete_node = *((void**)delete_node);
     }
+    *((void**)prev_node) = NULL;
 
     if (_del_func != NULL)
     {
@@ -155,7 +143,7 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list, void (*const _del
 
 // Возвращает указатель на данные первого узла.
 // В случае ошибки возвращает NULL.
-void *c_forward_list_front(c_forward_list *const _list)
+void *c_forward_list_front(const c_forward_list *const _list)
 {
     if (_list == NULL) return NULL;
     if (_list->nodes_count == 0) return NULL;
@@ -165,7 +153,7 @@ void *c_forward_list_front(c_forward_list *const _list)
 
 // Возвращает указатель на данные узла с заданным индексом.
 // В случае ошибки возвращает NULL.
-void *c_forward_list_at(c_forward_list *const _list, const size_t _index)
+void *c_forward_list_at(const c_forward_list *const _list, const size_t _index)
 {
     if (_list == NULL) return NULL;
     if (_index >= _list->nodes_count) return NULL;
@@ -180,7 +168,7 @@ void *c_forward_list_at(c_forward_list *const _list, const size_t _index)
 
 // Возвращает указатель на данные последнего узла.
 // В случае ошибки возвращает NULL.
-void *c_forward_list_back(c_forward_list *const _list)
+void *c_forward_list_back(const c_forward_list *const _list)
 {
     if (_list == NULL) return NULL;
     if (_list->nodes_count == 0) return NULL;
@@ -207,22 +195,16 @@ void *c_forward_list_insert(c_forward_list *const _list, const size_t _data_size
     void *new_node = malloc(sizeof(void*) + _data_size);
     if (new_node == NULL) return NULL;
 
-    if (_index == 0)
-    {
-        *((void**)new_node) = _list->head;
-        _list->head = new_node;
-    } else {
-        void *next = _list->head,
-             *prev;
+    void *prev_node = &_list->head,
+         *select_node = _list->head;
 
-        for (size_t i = 0; i < _index; ++i)
-        {
-            prev = next;
-            next = *((void**)next);
-        }
-        *((void**)prev) = new_node;
-        *((void**)new_node) = next;
+    for (size_t i = 0; i < _index; ++i)
+    {
+        prev_node = select_node;
+        select_node = *((void**)select_node);
     }
+    *((void**)prev_node) = new_node;
+    *((void**)new_node) = select_node;
 
     ++_list->nodes_count;
 
@@ -236,20 +218,15 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _list, const size_t _index,
     if (_list == NULL) return -1;
     if (_index >= _list->nodes_count) return -2;
 
+    void *prev_node = &_list->head;
     void *delete_node = _list->head;
 
-    if (_index == 0)
+    for (size_t i = 0; i < _index; ++i)
     {
-        _list->head = *((void**)_list->head);
-    } else{
-        void *prev_node;
-        for (size_t i = 0; i < _index; ++i)
-        {
-            prev_node = delete_node;
-            delete_node = *((void**)delete_node);
-        }
-        *((void**)prev_node) = *((void**)delete_node);
+        prev_node = delete_node;
+        delete_node = *((void**)delete_node);
     }
+    *((void**)prev_node) = *((void**)delete_node);
 
     if (_del_func != NULL)
     {
