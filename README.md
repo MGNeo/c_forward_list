@@ -177,7 +177,7 @@ int main(int argc, char **argv)
 
     Data type:
 	
-	size_t
+    	size_t
 
 	value: 100500
 	
