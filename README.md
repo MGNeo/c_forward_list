@@ -175,10 +175,9 @@ int main(int argc, char **argv)
 
 **Вывод:**
 
-
-*Data type:* 
+Data type:
 	
-	*size_t*
+	size_t
 	
 	value: 100500
 	
@@ -188,10 +187,8 @@ Data type: person
 	
 	mass: 79.199997
 	
-Data type: 
+dir /fonts Data type: 
 	
 	char*
 	
 	value: ok*
-	
-*
