@@ -72,9 +72,6 @@ forward_list = NULL;
 /* 0 - данные типа size_t;
  * 1 - данные типа char*;
  * 2 - данные типа person;
- *
- *
- *
  */
 
 // Данные о человеке.
@@ -114,45 +111,65 @@ void poly_print(void *const _data)
 // Функция полиморфного удаления данных узла.
 void poly_free(void *const _data)
 {
-
+	switch ( *((uint8_t*)_data) )
+	{
+		case(0) :
+		{
+			break;
+		}
+		case(1) :
+		{
+			free( *( (char**) ((uint8_t*)_data + 1) ) );
+			break;
+		}
+		case(2) :
+		{
+			free((*((person*)((uint8_t*)_data + 1))).name);
+			break;
+		}
+	}
 }
 
 
 
 int main(int argc, char **argv)
 {
-	// Создание списка.
-	c_forward_list *forward_list = c_forward_list_create();
+	// Цикл, для демонстрации того, что в программе нет утечек, повреждений кучи и ошибок сегментации.
+	while (1)
+	{
+		// Создание списка.
+		c_forward_list *forward_list = c_forward_list_create();
 
-	// Вставка узла в начало списка, данные вставляемого узла - это uint8_t(метка) + size_t
-	void * data = c_forward_list_push_front(forward_list, sizeof(uint8_t) + sizeof(size_t));
-	*((uint8_t*)data) = 0;
-	*((size_t*)((uint8_t*)data + 1)) = 100500;
+		// Вставка узла в начало списка, данные вставляемого узла - это uint8_t(метка) + size_t
+		void * data = c_forward_list_push_front(forward_list, sizeof(uint8_t) + sizeof(size_t));
+		*((uint8_t*)data) = 0;
+		*((size_t*)((uint8_t*)data + 1)) = 100500;
 
-	// Вставка узла в конец списка, данные вставляемого узла - это uint8_t(метка) + указатель на строку однобайтовых символов.
-	data = c_forward_list_push_back(forward_list, sizeof(uint8_t) + sizeof(char*));
-	*((uint8_t*)data) = 1;
-	char *str = malloc(3);
-	memcpy(str, "ok", 3);
-	*((char**)((uint8_t*)data + 1)) = str;
+		// Вставка узла в конец списка, данные вставляемого узла - это uint8_t(метка) + указатель на строку однобайтовых символов.
+		data = c_forward_list_push_back(forward_list, sizeof(uint8_t) + sizeof(char*));
+		*((uint8_t*)data) = 1;
+		char *str = malloc(3);
+		memcpy(str, "ok", 3);
+		*((char**)((uint8_t*)data + 1)) = str;
 
-	// Вставка узла по заданному порядковому индексу, данные вставляемого узла - это uint8_t(метка) + 1 элемент типа person.
-	data = c_forward_list_insert(forward_list, (sizeof(uint8_t) + sizeof(person)), 1);
-	*( (char*) data ) = 2;
-	( *((person*)((uint8_t*)data + 1)) ).mass = 79.2f;
-	char *name = malloc(5);
-	memcpy(name, "maks", 5);
-	(*((person*)((uint8_t*)data + 1))).name = name;
+		// Вставка узла по заданному порядковому индексу, данные вставляемого узла - это uint8_t(метка) + 1 элемент типа person.
+		data = c_forward_list_insert(forward_list, (sizeof(uint8_t) + sizeof(person)), 1);
+		*((uint8_t*)data) = 2;
+		(*((person*)((uint8_t*)data + 1))).mass = 79.2f;
+		char *name = malloc(5);
+		memcpy(name, "maks", 5);
+		(*((person*)((uint8_t*)data + 1))).name = name;
 
-	printf("nodes_count: %Iu\n", forward_list->nodes_count);
+		// Вывод содержимого полиморфного списка.
+		c_forward_list_for_each(forward_list, poly_print);
 
-	// Вывод содержимого полиморфного списка.
-	c_forward_list_for_each(forward_list, poly_print);
+		// Удаление полиморфного списка.
+		c_forward_list_delete(forward_list, poly_free);
 
-	// Удаление полиморфного списка.
-	c_forward_list_delete(forward_list, poly_free);
+		getchar();
+	}
 
-	getchar();
 	return 0;
 }
+
 ```
