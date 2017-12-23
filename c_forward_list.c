@@ -299,3 +299,31 @@ size_t c_forward_list_erase_few(c_forward_list *const _list, size_t (*const _com
 
     return count;
 }
+
+// Очищает список ото всех узлов.
+// В случае успеха возвращает > 0, иначе < 0.
+ptrdiff_t c_forward_list_clear(c_forward_list *const _list, void (*const _del_func(void *const _data)))
+{
+    if (_list == NULL) return -1;
+    if (_list->nodes_count == 0) return 1;
+
+    void *select_node = _list->head,
+         *delete_node;
+
+    for (size_t i = 0; i < _list->nodes_count; ++i)
+    {
+        delete_node = select_node;
+        select_node = *((void**)select_node);
+
+        if (_del_func != NULL)
+        {
+            _del_func((uint8_t*)delete_node + sizeof(void*));
+        }
+        free(delete_node);
+    }
+
+    _list->head = NULL;
+    _list->nodes_count = 0;
+
+    return 2;
+}
