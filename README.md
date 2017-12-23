@@ -145,7 +145,8 @@ int main(int argc, char **argv)
 		*( (uint8_t*)data ) = 0;
 		*( (size_t*) ( (uint8_t*)data + 1 ) ) = 100500;
 
-		// Вставка узла в конец списка, данные вставляемого узла - это uint8_t(метка) + указатель на строку однобайтовых символов.
+		// Вставка узла в конец списка, данные вставляемого узла - это uint8_t(метка) + указатель на строку 
+		// однобайтовых символов.
 		data = c_forward_list_push_back(forward_list, sizeof(uint8_t) + sizeof(char*));
 		*( (uint8_t*)data ) = 1;
 		char *str = malloc(3);
@@ -175,20 +176,20 @@ int main(int argc, char **argv)
 
 **Вывод:**
 
-    Data type:
+    **Data type:**
 	
-    	size_t
+    	**size_t**
 
-	value: 100500
+    	**value: 100500**
 	
-    Data type: person
+    **Data type: person**
 	
-	name: maks
+    	**name: maks**
 	
-	mass: 79.199997
+    	**mass: 79.199997**
 	
-    Data type: 
+    **Data type:** 
 	
-	char*
+    	**char***
 	
-	value: ok*
+    	**value: ok***
