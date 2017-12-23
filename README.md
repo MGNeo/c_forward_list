@@ -175,19 +175,19 @@ int main(int argc, char **argv)
 
 **Вывод:**
 
-Data type:
+    Data type:
 	
 	size_t
-	
+
 	value: 100500
 	
-Data type: person
+    Data type: person
 	
 	name: maks
 	
 	mass: 79.199997
 	
-dir /fonts Data type: 
+    Data type: 
 	
 	char*
 	
