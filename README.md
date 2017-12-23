@@ -183,7 +183,7 @@ int main(int argc, char **argv)
 	
     Data type: person
 	
-    	name: maks**
+    	name: maks
 	
     	mass: 79.199997
 	
