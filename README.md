@@ -89,20 +89,20 @@ void poly_print(void *const _data)
 		case(0) :
 		{
 			printf("Data type: size_t\n   value: %Iu\n",
-				*((size_t*)((uint8_t*)_data + 1)));
+				*( (size_t*) ((uint8_t*)_data + 1) ) );
 			break;
 		}
 		case(1) :
 		{
 			printf("Data type: char*\n   value: %s\n", 
-				*((char**)((uint8_t*)_data + 1)));
+				*( (char**) ((uint8_t*)_data + 1) ) );
 			break;
 		}
 		case(2) :
 		{
 			printf("Data type: person\n   name: %s\n   mass: %f\n",
-				(*((person*)((uint8_t*)_data + 1))).name,
-				(*((person*)((uint8_t*)_data + 1))).mass);
+				( *( (person*) ((uint8_t*)_data + 1) ) ).name,
+				( *( (person*) ((uint8_t*)_data + 1) ) ).mass);
 			break;
 		}
 	}
@@ -124,7 +124,7 @@ void poly_free(void *const _data)
 		}
 		case(2) :
 		{
-			free((*((person*)((uint8_t*)_data + 1))).name);
+			free( ( *( (person*) ((uint8_t*)_data + 1) ) ).name );
 			break;
 		}
 	}
@@ -142,23 +142,23 @@ int main(int argc, char **argv)
 
 		// Вставка узла в начало списка, данные вставляемого узла - это uint8_t(метка) + size_t
 		void * data = c_forward_list_push_front(forward_list, sizeof(uint8_t) + sizeof(size_t));
-		*((uint8_t*)data) = 0;
-		*((size_t*)((uint8_t*)data + 1)) = 100500;
+		*( (uint8_t*)data ) = 0;
+		*( (size_t*) ( (uint8_t*)data + 1 ) ) = 100500;
 
 		// Вставка узла в конец списка, данные вставляемого узла - это uint8_t(метка) + указатель на строку однобайтовых символов.
 		data = c_forward_list_push_back(forward_list, sizeof(uint8_t) + sizeof(char*));
-		*((uint8_t*)data) = 1;
+		*( (uint8_t*)data ) = 1;
 		char *str = malloc(3);
 		memcpy(str, "ok", 3);
-		*((char**)((uint8_t*)data + 1)) = str;
+		*( (char**)((uint8_t*)data + 1) ) = str;
 
 		// Вставка узла по заданному порядковому индексу, данные вставляемого узла - это uint8_t(метка) + 1 элемент типа person.
 		data = c_forward_list_insert(forward_list, (sizeof(uint8_t) + sizeof(person)), 1);
-		*((uint8_t*)data) = 2;
-		(*((person*)((uint8_t*)data + 1))).mass = 79.2f;
+		*( (uint8_t*)data ) = 2;
+		( *( (person*)((uint8_t*)data + 1) ) ).mass = 79.2f;
 		char *name = malloc(5);
 		memcpy(name, "maks", 5);
-		(*((person*)((uint8_t*)data + 1))).name = name;
+		( *( (person*)((uint8_t*)data + 1) ) ).name = name;
 
 		// Вывод содержимого полиморфного списка.
 		c_forward_list_for_each(forward_list, poly_print);
@@ -171,5 +171,4 @@ int main(int argc, char **argv)
 
 	return 0;
 }
-
 ```
