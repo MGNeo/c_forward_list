@@ -172,3 +172,17 @@ int main(int argc, char **argv)
 	return 0;
 }
 ```
+
+**Вывод:**
+
+*
+Data type: 
+	size_t
+	value: 100500
+Data type: person
+	name: maks
+	mass: 79.199997
+Data type: 
+	char*
+	value: ok*
+*
