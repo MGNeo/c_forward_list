@@ -176,20 +176,20 @@ int main(int argc, char **argv)
 
 **Вывод:**
 
-    **Data type:**
+    Data type:
 	
-    	**size_t**
+    	size_t
 
-    	**value: 100500**
+    	value: 100500
 	
-    **Data type: person**
+    Data type: person
 	
-    	**name: maks**
+    	name: maks**
 	
-    	**mass: 79.199997**
+    	mass: 79.199997
 	
-    **Data type:** 
+    Data type:
 	
-    	**char***
+    	char
 	
-    	**value: ok***
+    	value: ok
