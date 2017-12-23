@@ -153,7 +153,8 @@ int main(int argc, char **argv)
 		memcpy(str, "ok", 3);
 		*( (char**)((uint8_t*)data + 1) ) = str;
 
-		// Вставка узла по заданному порядковому индексу, данные вставляемого узла - это uint8_t(метка) + 1 элемент типа person.
+		// Вставка узла по заданному порядковому индексу, данные вставляемого узла - это uint8_t(метка) 
+		// + 1 элемент типа person.
 		data = c_forward_list_insert(forward_list, (sizeof(uint8_t) + sizeof(person)), 1);
 		*( (uint8_t*)data ) = 2;
 		( *( (person*)((uint8_t*)data + 1) ) ).mass = 79.2f;
