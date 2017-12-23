@@ -177,9 +177,7 @@ int main(int argc, char **argv)
 
 **Вывод:**
 
-    Data type:
-	
-    	size_t
+    Data type: size_t
 
     	value: 100500
 	
@@ -189,8 +187,6 @@ int main(int argc, char **argv)
 	
     	mass: 79.199997
 	
-    Data type:
-	
-    	char
+    Data type: char*
 	
     	value: ok
