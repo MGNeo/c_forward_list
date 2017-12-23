@@ -52,7 +52,7 @@ size_t comp(void *const _data)
 c_forward_list_erase_few(forward_list, comp, NULL);
 ```
 
-Удаление списка, все узлы которого содержат данные элементарных типов:
+Удаление списка, данные которого не требуют задания специализированной функции удаления:
 
 ```c++
 c_forward_list_delete(forward_list, NULL);
