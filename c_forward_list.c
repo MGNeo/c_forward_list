@@ -23,19 +23,31 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_f
     {
         void *select_node = _list->head,
              *delete_node;
-        
-        while(select_node != NULL)
+
+        if (_del_func != NULL)
         {
-            delete_node = select_node;
-            select_node = *((void**)select_node);
-            if (_del_func != NULL)
+            while(select_node != NULL)
             {
+                delete_node = select_node;
+                select_node = *((void**)select_node);
+
                 _del_func((uint8_t*)delete_node + sizeof(void*));
+
+                free(delete_node);
             }
-            free(delete_node);
+        } else {
+            while(select_node != NULL)
+            {
+                delete_node = select_node;
+                select_node = *((void**)select_node);
+
+                free(delete_node);
+            }
         }
     }
+
     free(_list);
+
     return 1;
 }
 
