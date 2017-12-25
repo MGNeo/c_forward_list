@@ -49,7 +49,7 @@ size_t comp(void *const _data)
         return 0;
     }
 }
-c_forward_list_erase_few(forward_list, comp, NULL);
+c_forward_list_remove_few(forward_list, comp, NULL);
 ```
 
 Удаление списка, данные которого не требуют задания специализированной функции удаления:
