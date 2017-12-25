@@ -261,7 +261,7 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _list, void (*const _fun
 // Удаляет из списка узлы, для данных которых _comp возвращает > 0.
 // Возвращает кол-во удаленных узлов.
 // В случае ошибки возвращает 0.
-size_t c_forward_list_erase_few(c_forward_list *const _list, size_t (*const _comp(void *const _data)),
+size_t c_forward_list_remove_few(c_forward_list *const _list, size_t (*const _comp(void *const _data)),
                                 void (* const _del_func(void *const _data)))
 {
     if (_list == NULL) return 0;

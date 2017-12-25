@@ -28,7 +28,7 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list, void (*const _del
 
 void *c_forward_list_insert(c_forward_list *const _list, const size_t _data_size, const size_t _index);
 ptrdiff_t c_forward_list_erase(c_forward_list *const _list, const size_t _index, void (*const _del_func(void *const _data)));
-size_t c_forward_list_erase_few(c_forward_list *const _list, size_t (*const _comp(void *const _data)),
+size_t c_forward_list_remove_few(c_forward_list *const _list, size_t (*const _comp(void *const _data)),
                                 void (*const _del_funct(void *const _data)));
 
 void *c_forward_list_front(const c_forward_list *const _list);
