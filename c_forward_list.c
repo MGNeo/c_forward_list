@@ -239,6 +239,102 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _list, const size_t _index,
     return 1;
 }
 
+// Удаляет узлы с заданными порядковыми индексами.
+// Если функция удаления задана, то в массиве, на который указывает _indexes, не должно быть одинаковых индексов,
+// иначе возможна ошибка повтороного освобождения ресурсов.
+// Массив, на который указывает _indexes, сортируется.
+// В случае успеха функция возвращает кол-во удаленных узлов.
+// В случае ошибки 0.
+size_t c_forward_list_erase_few(c_forward_list *const _list, size_t *const _indexes, const size_t _indexes_count,
+                                void (*const _del_func(void *const _data)))
+{
+    if (_list == NULL) return 0;
+    if (_indexes == NULL) return 0;
+    if (_indexes_count == 0) return 0;
+    if (_list->nodes_count == 0) return 0;
+    size_t count = 0;
+    // Компаратор для бинарного поиска.
+    ptrdiff_t comp_bsearch(const void *const _key, const size_t * const _value)
+    {
+        const size_t key = *((size_t*)_key);
+        const size_t value = *((size_t*)_value);
+        if (key > value)
+        {
+            return 1;
+        } else {
+            if (key == value)
+            {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    }
+    // Компаратор для сортировки массива, на который указывает _indexes.
+    ptrdiff_t comp_sort(const void *const _a, const void *const _b)
+    {
+        const size_t a = *((size_t*)_a);
+        const size_t b = *((size_t*)_b);
+        if (a > b)
+        {
+            return 1;
+        } else {
+            if (a == b)
+            {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    }
+    // Сортируем массив индексов.
+    qsort(_indexes, _indexes_count, sizeof(size_t), comp_sort);
+    void *prev_node = &_list->head,
+         *select_node = _list->head,
+         *next_node;
+    if (_del_func != NULL)
+    {
+        for (size_t i = 0; i < _list->nodes_count; ++i)
+        {
+            next_node = *((void**)select_node);
+            if(bsearch(&i,
+                       _indexes,
+                       _indexes_count,
+                       sizeof(size_t),
+                       comp_bsearch) != NULL)
+            {
+                _del_func((uint8_t*)select_node + sizeof(void*));
+                free(select_node);
+                ++count;
+                *((void**)prev_node) = next_node;
+            } else {
+                prev_node = select_node;
+            }
+            select_node = next_node;
+        }
+    } else {
+        for (size_t i = 0; i < _list->nodes_count; ++i)
+        {
+            next_node = *((void**)select_node);
+            if(bsearch(&i,
+                       _indexes,
+                       _indexes_count,
+                       sizeof(size_t),
+                       comp_bsearch) != NULL)
+            {
+                free(select_node);
+                ++count;
+                *((void**)prev_node) = next_node;
+            } else {
+                prev_node = select_node;
+            }
+            select_node = next_node;
+        }
+    }
+    _list->nodes_count -= count;
+    return count;
+}
+
 // Проходит по всему списку и выполняет над данными каждого списка _func.
 // В случае успеха возвращает > 0, иначе < 0.
 ptrdiff_t c_forward_list_for_each(c_forward_list *const _list, void (*const _func(void *const _data)))
