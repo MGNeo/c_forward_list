@@ -15,7 +15,8 @@ c_forward_list *c_forward_list_create(void)
 
 // Удаляет односвязный список.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_func)(void *const _data))
+ptrdiff_t c_forward_list_delete(c_forward_list *const _list,
+                                void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return -1;
 
@@ -54,7 +55,8 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_f
 // Вставляет в начало списка новый узел.
 // В случае успеха возвращает указатель на неинициализированные данные.
 // В случае ошибки возвращает NULL.
-void *c_forward_list_push_front(c_forward_list *const _list, const size_t _data_size)
+void *c_forward_list_push_front(c_forward_list *const _list,
+                                const size_t _data_size)
 {
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
@@ -71,7 +73,8 @@ void *c_forward_list_push_front(c_forward_list *const _list, const size_t _data_
 
 // Уничтожает начальный узел списка.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*const _del_func)(void *const _data))
+ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list,
+                                   void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return -1;
     if (_list->nodes_count == 0) return -2;
@@ -94,7 +97,8 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list, void (*const _de
 // Вставляет в конец списка новый узел.
 // В случаеуспеха возвращает указатель на неинициализированные данные.
 // В случае ошибки возвращает NULL.
-void *c_forward_list_push_back(c_forward_list *const _list, const size_t _data_size)
+void *c_forward_list_push_back(c_forward_list *const _list,
+                               const size_t _data_size)
 {
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
@@ -117,7 +121,8 @@ void *c_forward_list_push_back(c_forward_list *const _list, const size_t _data_s
 
 // Уничтожает последний узел списка.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list, void (*const _del_func)(void *const _data))
+ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list,
+                                  void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return -1;
     if (_list->nodes_count == 0) return -2;
@@ -154,7 +159,8 @@ void *c_forward_list_front(const c_forward_list *const _list)
 
 // Возвращает указатель на данные узла с заданным индексом.
 // В случае ошибки возвращает NULL.
-void *c_forward_list_at(const c_forward_list *const _list, const size_t _index)
+void *c_forward_list_at(const c_forward_list *const _list,
+                        const size_t _index)
 {
     if (_list == NULL) return NULL;
     if (_index >= _list->nodes_count) return NULL;
@@ -187,7 +193,9 @@ void *c_forward_list_back(const c_forward_list *const _list)
 // В случае успеха возвращает указатель на данные нового узла.
 // В случае ошибки возвращает NULL.
 // Позволяет вставлять в пустой список, если _index = 0;
-void *c_forward_list_insert(c_forward_list *const _list, const size_t _data_size, const size_t _index)
+void *c_forward_list_insert(c_forward_list *const _list,
+                            const size_t _data_size,
+                            const size_t _index)
 {
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
@@ -214,7 +222,9 @@ void *c_forward_list_insert(c_forward_list *const _list, const size_t _data_size
 
 // Удаляет узел с заданным порядковым номером.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_erase(c_forward_list *const _list, const size_t _index, void (*const _del_func)(void *const _data))
+ptrdiff_t c_forward_list_erase(c_forward_list *const _list,
+                               const size_t _index,
+                               void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return -1;
     if (_index >= _list->nodes_count) return -2;
@@ -246,7 +256,9 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _list, const size_t _index,
 // Массив, на который указывает _indexes, сортируется.
 // В случае успеха функция возвращает кол-во удаленных узлов.
 // В случае ошибки 0.
-size_t c_forward_list_erase_few(c_forward_list *const _list, size_t *const _indexes, const size_t _indexes_count,
+size_t c_forward_list_erase_few(c_forward_list *const _list,
+                                size_t *const _indexes,
+                                const size_t _indexes_count,
                                 void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return 0;
@@ -255,7 +267,8 @@ size_t c_forward_list_erase_few(c_forward_list *const _list, size_t *const _inde
     if (_list->nodes_count == 0) return 0;
     size_t count = 0;
     // Компаратор для бинарного поиска.
-    ptrdiff_t comp_bsearch(const void *const _key, const size_t * const _value)
+    ptrdiff_t comp_bsearch(const void *const _key,
+                           const size_t *const _value)
     {
         const size_t key = *((size_t*)_key);
         const size_t value = *((size_t*)_value);
@@ -272,7 +285,8 @@ size_t c_forward_list_erase_few(c_forward_list *const _list, size_t *const _inde
         }
     }
     // Компаратор для сортировки массива, на который указывает _indexes.
-    ptrdiff_t comp_sort(const void *const _a, const void *const _b)
+    ptrdiff_t comp_sort(const void *const _a,
+                        const void *const _b)
     {
         const size_t a = *((size_t*)_a);
         const size_t b = *((size_t*)_b);
@@ -338,7 +352,8 @@ size_t c_forward_list_erase_few(c_forward_list *const _list, size_t *const _inde
 
 // Проходит по всему списку и выполняет над данными каждого списка _func.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_for_each(c_forward_list *const _list, void (*const _func)(void *const _data))
+ptrdiff_t c_forward_list_for_each(c_forward_list *const _list,
+                                  void (*const _func)(void *const _data))
 {
     if (_list == NULL) return -1;
     if (_func == NULL) return -2;
@@ -358,8 +373,9 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _list, void (*const _fun
 // Удаляет из списка узлы, для данных которых _comp возвращает > 0.
 // Возвращает кол-во удаленных узлов.
 // В случае ошибки возвращает 0.
-size_t c_forward_list_remove_few(c_forward_list *const _list, size_t (*const _comp)(void *const _data),
-                                void (* const _del_func)(void *const _data))
+size_t c_forward_list_remove_few(c_forward_list *const _list,
+                                 size_t (*const _comp)(void *const _data),
+                                 void (* const _del_func)(void *const _data))
 {
     if (_list == NULL) return 0;
     if (_comp == NULL) return 0;
@@ -399,7 +415,8 @@ size_t c_forward_list_remove_few(c_forward_list *const _list, size_t (*const _co
 
 // Очищает список ото всех узлов.
 // В случае успеха возвращает > 0, иначе < 0.
-ptrdiff_t c_forward_list_clear(c_forward_list *const _list, void (*const _del_func)(void *const _data))
+ptrdiff_t c_forward_list_clear(c_forward_list *const _list,
+                               void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return -1;
     if (_list->nodes_count == 0) return 1;
