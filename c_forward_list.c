@@ -61,7 +61,11 @@ void *c_forward_list_push_front(c_forward_list *const _list,
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
 
-    void *new_node = malloc(sizeof(void*) + _data_size);
+    // Проверяем переполнение.
+    const size_t new_node_size = sizeof(void*) + _data_size;
+    if (new_node_size < _data_size) return NULL;
+
+    void *new_node = malloc(new_node_size);
     if (new_node == NULL) return NULL;
 
     *((void**)new_node) = _list->head;
@@ -103,7 +107,11 @@ void *c_forward_list_push_back(c_forward_list *const _list,
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
 
-    void *new_node = malloc(sizeof(void*) + _data_size);
+    // Проверяем переполнение.
+    const size_t new_node_size = sizeof(void*) + _data_size;
+    if (new_node_size < _data_size) return NULL;
+
+    void *new_node = malloc(new_node_size);
     if (new_node == NULL) return NULL;
 
     void *last_node = &_list->head;
@@ -129,6 +137,7 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list,
 
     void *prev_node = &_list->head;
     void *delete_node = _list->head;
+
     for (size_t i = 1; i < _list->nodes_count; ++i)
     {
         prev_node = delete_node;
@@ -201,7 +210,11 @@ void *c_forward_list_insert(c_forward_list *const _list,
     if (_data_size == 0) return NULL;
     if (_index > _list->nodes_count) return NULL;
 
-    void *new_node = malloc(sizeof(void*) + _data_size);
+    // Контроль переполнения.
+    const size_t new_node_size = sizeof(void*) + _data_size;
+    if (new_node_size < _data_size) return NULL;
+
+    void *new_node = malloc(new_node_size);
     if (new_node == NULL) return NULL;
 
     void *prev_node = &_list->head,
