@@ -57,6 +57,7 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list, void (*const _del_f
 void *c_forward_list_push_front(c_forward_list *const _list, const size_t _data_size)
 {
     if (_list == NULL) return NULL;
+    if (_data_size == 0) return NULL;
 
     void *new_node = malloc(sizeof(void*) + _data_size);
     if (new_node == NULL) return NULL;
