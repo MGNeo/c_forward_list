@@ -32,7 +32,7 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list,
                 delete_node = select_node;
                 select_node = *((void**)select_node);
 
-                _del_func((uint8_t*)delete_node + sizeof(void*));
+                _del_func((void**)delete_node + 1);
 
                 free(delete_node);
             }
@@ -72,7 +72,7 @@ void *c_forward_list_push_front(c_forward_list *const _list,
     _list->head = new_node;
     ++_list->nodes_count;
 
-    return (uint8_t*)_list->head + sizeof(void*);
+    return (void**)_list->head + 1;
 }
 
 // Уничтожает начальный узел списка.
@@ -88,7 +88,7 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _list,
 
     if (_del_func != NULL)
     {
-        _del_func((uint8_t*)delete_node + sizeof(void*));
+        _del_func((void**)delete_node + 1);
     }
 
     free(delete_node);
@@ -124,7 +124,7 @@ void *c_forward_list_push_back(c_forward_list *const _list,
 
     ++_list->nodes_count;
 
-    return (uint8_t*)new_node + sizeof(void*);
+    return (void**)new_node + 1;
 }
 
 // Уничтожает последний узел списка.
@@ -147,7 +147,7 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _list,
 
     if (_del_func != NULL)
     {
-        _del_func((uint8_t*)delete_node + sizeof(void*));
+        _del_func((void**)delete_node + 1);
     }
     free(delete_node);
 
@@ -163,7 +163,7 @@ void *c_forward_list_front(const c_forward_list *const _list)
     if (_list == NULL) return NULL;
     if (_list->nodes_count == 0) return NULL;
 
-    return (uint8_t*)_list->head + sizeof(void*);
+    return (void**)_list->head + 1;
 }
 
 // Возвращает указатель на данные узла с заданным индексом.
@@ -179,7 +179,7 @@ void *c_forward_list_at(const c_forward_list *const _list,
         select_node = *((void**)select_node);
     }
 
-    return (uint8_t*)select_node + sizeof(void*);
+    return (void**)select_node + 1;
 }
 
 // Возвращает указатель на данные последнего узла.
@@ -195,7 +195,7 @@ void *c_forward_list_back(const c_forward_list *const _list)
         select_node = *((void**)select_node);
     }
 
-    return (uint8_t*)select_node + sizeof(void*);
+    return (void**)select_node + 1;
 }
 
 // Вставка в заданную позицию нового узла с неинициализированными данными.
@@ -230,7 +230,7 @@ void *c_forward_list_insert(c_forward_list *const _list,
 
     ++_list->nodes_count;
 
-    return (uint8_t*)new_node + sizeof(void*);
+    return (void**)new_node + 1;
 }
 
 // Удаляет узел с заданным порядковым номером.
@@ -254,7 +254,7 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _list,
 
     if (_del_func != NULL)
     {
-        _del_func( (uint8_t*)delete_node + sizeof(void*));
+        _del_func( (void**)delete_node + 1);
     }
     free(delete_node);
 
@@ -331,7 +331,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
                        sizeof(size_t),
                        comp_bsearch) != NULL)
             {
-                _del_func((uint8_t*)select_node + sizeof(void*));
+                _del_func((void**)select_node + 1);
                 free(select_node);
                 ++count;
                 *((void**)prev_node) = next_node;
@@ -375,7 +375,7 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _list,
     void *select_node = _list->head;
     while(select_node != NULL)
     {
-        _func((uint8_t*)select_node + sizeof(void*));
+        _func((void**)select_node + 1);
 
         select_node = *((void**)select_node);
     }
@@ -404,11 +404,11 @@ size_t c_forward_list_remove_few(c_forward_list *const _list,
     {
         next_node = *((void**)select_node);
 
-        if (_comp((uint8_t*)select_node + sizeof(void*)) > 0)
+        if (_comp((void**)select_node + 1) > 0)
         {
             if (_del_func != NULL)
             {
-                _del_func((uint8_t*)select_node + sizeof(void*));
+                _del_func((void**)select_node + 1);
             }
             free(select_node);
 
@@ -444,7 +444,7 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _list,
 
         if (_del_func != NULL)
         {
-            _del_func((uint8_t*)delete_node + sizeof(void*));
+            _del_func((void**)delete_node + 1);
         }
         free(delete_node);
     }
