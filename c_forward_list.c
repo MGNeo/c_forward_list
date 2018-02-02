@@ -364,13 +364,13 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
 }
 
 // Проходит по всему списку и выполняет над данными каждого списка _func.
-// В случае успеха возвращает > 0, иначе < 0.
+// В случае успеха возвращает > 0, в случае ошибки < 0.
 ptrdiff_t c_forward_list_for_each(c_forward_list *const _list,
                                   void (*const _func)(void *const _data))
 {
     if (_list == NULL) return -1;
     if (_func == NULL) return -2;
-    if (_list->nodes_count == 0) return -3;
+    if (_list->nodes_count == 0) return 1;
 
     void *select_node = _list->head;
     while(select_node != NULL)
@@ -380,7 +380,7 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _list,
         select_node = *((void**)select_node);
     }
 
-    return 1;
+    return 2;
 }
 
 // Удаляет из списка узлы, для данных которых _comp возвращает > 0.
@@ -427,7 +427,7 @@ size_t c_forward_list_remove_few(c_forward_list *const _list,
 }
 
 // Очищает список ото всех узлов.
-// В случае успеха возвращает > 0, иначе < 0.
+// В случае успеха возвращает > 0, в случае ошибки < 0.
 ptrdiff_t c_forward_list_clear(c_forward_list *const _list,
                                void (*const _del_func)(void *const _data))
 {
