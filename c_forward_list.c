@@ -265,6 +265,7 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _list,
 
 // Удаляет узлы с заданными порядковыми индексами.
 // Массив, на который указывает _indexes, сортируется.
+// Наличие несуществующих или одинаковых индексов не считается ошибкой.
 // В случае успеха функция возвращает кол-во удаленных узлов.
 // В случае ошибки 0.
 size_t c_forward_list_erase_few(c_forward_list *const _list,
@@ -276,25 +277,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
     if (_indexes == NULL) return 0;
     if (_indexes_count == 0) return 0;
     if (_list->nodes_count == 0) return 0;
-    size_t count = 0;
-    // Компаратор для бинарного поиска.
-    ptrdiff_t comp_bsearch(const void *const _key,
-                           const size_t *const _value)
-    {
-        const size_t key = *((size_t*)_key);
-        const size_t value = *((size_t*)_value);
-        if (key > value)
-        {
-            return 1;
-        } else {
-            if (key == value)
-            {
-                return 0;
-            } else {
-                return -1;
-            }
-        }
-    }
+
     // Компаратор для сортировки массива, на который указывает _indexes.
     ptrdiff_t comp_sort(const void *const _a,
                         const void *const _b)
@@ -313,26 +296,30 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
             }
         }
     }
+
     // Сортируем массив индексов.
     qsort(_indexes, _indexes_count, sizeof(size_t), comp_sort);
+
+    // Если корректных индексов нет, то завершаем.
+    if (_indexes[0] > _list->nodes_count) return 0;
+
+    size_t i_count = 0;
+
     void *prev_node = &_list->head,
          *select_node = _list->head,
          *next_node;
+
     if (_del_func != NULL)
     {
         for (size_t i = 0; i < _list->nodes_count; ++i)
         {
             next_node = *((void**)select_node);
-            if(bsearch(&i,
-                       _indexes,
-                       _indexes_count,
-                       sizeof(size_t),
-                       comp_bsearch) != NULL)
+            if(i == _indexes[i_count])
             {
                 _del_func((void**)select_node + 1);
                 free(select_node);
-                ++count;
                 *((void**)prev_node) = next_node;
+                ++i_count;
             } else {
                 prev_node = select_node;
             }
@@ -342,23 +329,21 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
         for (size_t i = 0; i < _list->nodes_count; ++i)
         {
             next_node = *((void**)select_node);
-            if(bsearch(&i,
-                       _indexes,
-                       _indexes_count,
-                       sizeof(size_t),
-                       comp_bsearch) != NULL)
+            if(i == _indexes[i_count])
             {
                 free(select_node);
-                ++count;
                 *((void**)prev_node) = next_node;
+                ++i_count;
             } else {
                 prev_node = select_node;
             }
             select_node = next_node;
         }
     }
-    _list->nodes_count -= count;
-    return count;
+
+    _list->nodes_count -= i_count;
+
+    return i_count;
 }
 
 // Проходит по всему списку и выполняет над данными каждого списка _func.
