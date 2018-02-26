@@ -303,6 +303,16 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
     // Если корректных индексов нет, то завершаем.
     if (_indexes[0] > _list->nodes_count) return 0;
 
+    // Избавимся от повторяющихся индексов.
+    size_t i_index = 0;
+    for (size_t i = 1; (i < _indexes_count) && (_indexes[i] < _list->nodes_count); ++i)
+    {
+        if (_indexes[i] != _indexes[i - 1])
+        {
+            _indexes[++i_index] = _indexes[i];
+        }
+    }
+
     size_t i_count = 0;
 
     void *prev_node = &_list->head,
