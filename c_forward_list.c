@@ -313,7 +313,10 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
         }
     }
 
-    size_t i_count = 0;
+    // Теперь i_index == количеству корректных уникальных индексов.
+    i_index += 1;
+
+    size_t count = 0;
 
     void *prev_node = &_list->head,
          *select_node = _list->head,
@@ -321,29 +324,29 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
 
     if (_del_func != NULL)
     {
-        for (size_t i = 0; i < _list->nodes_count; ++i)
+        for (size_t i = 0; (i < _list->nodes_count) && (count <  i_index); ++i)
         {
             next_node = *((void**)select_node);
-            if(i == _indexes[i_count])
+            if(i == _indexes[count])
             {
                 _del_func((void**)select_node + 1);
                 free(select_node);
                 *((void**)prev_node) = next_node;
-                ++i_count;
+                ++count;
             } else {
                 prev_node = select_node;
             }
             select_node = next_node;
         }
     } else {
-        for (size_t i = 0; i < _list->nodes_count; ++i)
+        for (size_t i = 0; (i < _list->nodes_count) && (count < i_index); ++i)
         {
             next_node = *((void**)select_node);
-            if(i == _indexes[i_count])
+            if(i == _indexes[count])
             {
                 free(select_node);
                 *((void**)prev_node) = next_node;
-                ++i_count;
+                ++count;
             } else {
                 prev_node = select_node;
             }
@@ -351,9 +354,9 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
         }
     }
 
-    _list->nodes_count -= i_count;
+    _list->nodes_count -= count;
 
-    return i_count;
+    return count;
 }
 
 // Проходит по всему списку и выполняет над данными каждого списка _func.
