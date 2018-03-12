@@ -280,7 +280,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
 
     // Компаратор для сортировки массива, на который указывает _indexes.
     int comp_sort(const void *const _a,
-                        const void *const _b)
+                  const void *const _b)
     {
         const size_t a = *((size_t*)_a);
         const size_t b = *((size_t*)_b);
