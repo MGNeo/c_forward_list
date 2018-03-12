@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <stdlib.h>
 #include "c_forward_list.h"
 
@@ -9,26 +9,26 @@ void print(void *const _data)
 
 int main()
 {
-    // Создание односвязного списка.
+    // РЎРѕР·РґР°РЅРёРµ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°.
     c_forward_list *forward_list = c_forward_list_create();
 
-    // Заполнение односвязного списка.
+    // Р—Р°РїРѕР»РЅРµРЅРёРµ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°.
     for (size_t i = 0; i < 10; ++i)
     {
         *( (size_t*) c_forward_list_push_back(forward_list, sizeof(size_t)) ) = i;
     }
 
-    // Задание массива с индексами для удаления.
+    // Р—Р°РґР°РЅРёРµ РјР°СЃСЃРёРІР° СЃ РёРЅРґРµРєСЃР°РјРё РґР»СЏ СѓРґР°Р»РµРЅРёСЏ.
     size_t indexes[4] = {1, 2, 2, 8};
 
-    // Вывод содержимого односвязного списка.
+    // Р’С‹РІРѕРґ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°.
     printf("forward_list:\n");
     c_forward_list_for_each(forward_list, print);
 
-    // Удаление узлов с заданными индексами.
+    // РЈРґР°Р»РµРЅРёРµ СѓР·Р»РѕРІ СЃ Р·Р°РґР°РЅРЅС‹РјРё РёРЅРґРµРєСЃР°РјРё.
     c_forward_list_erase_few(forward_list, indexes, 4, NULL);
 
-    // Вывод содержимого односвязного списка.
+    // Р’С‹РІРѕРґ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°.
     printf("forward_list:\n");
     c_forward_list_for_each(forward_list, print);
 
