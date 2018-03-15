@@ -60,6 +60,7 @@ void *c_forward_list_push_front(c_forward_list *const _list,
 {
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
+    if (_list->nodes_count == SIZE_MAX) return NULL;// Не, ну а вдруг...)
 
     // Проверяем переполнение.
     const size_t new_node_size = sizeof(void*) + _data_size;
@@ -106,6 +107,7 @@ void *c_forward_list_push_back(c_forward_list *const _list,
 {
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
+    if (_list->nodes_count == SIZE_MAX) return NULL;// Не, ну а вдруг...)
 
     // Проверяем переполнение.
     const size_t new_node_size = sizeof(void*) + _data_size;
@@ -173,6 +175,7 @@ void *c_forward_list_at(const c_forward_list *const _list,
 {
     if (_list == NULL) return NULL;
     if (_index >= _list->nodes_count) return NULL;
+
     void *select_node = _list->head;
     for (size_t i = 0; i < _index; ++i)
     {
@@ -208,6 +211,7 @@ void *c_forward_list_insert(c_forward_list *const _list,
 {
     if (_list == NULL) return NULL;
     if (_data_size == 0) return NULL;
+    if (_list->nodes_count == SIZE_MAX) return NULL;// Не, ну а вдруг...)
     if (_index > _list->nodes_count) return NULL;
 
     // Контроль переполнения.
@@ -315,6 +319,8 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
 
     // Теперь i_index == количеству корректных уникальных индексов.
     i_index += 1;
+    // Контроль переполнения.
+    if (i_index < i_index - 1) return NULL;// Не, ну а вдруг...)
 
     size_t count = 0;
 
@@ -384,7 +390,7 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _list,
 // В случае ошибки возвращает 0.
 size_t c_forward_list_remove_few(c_forward_list *const _list,
                                  size_t (*const _comp)(void *const _data),
-                                 void (* const _del_func)(void *const _data))
+                                 void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return 0;
     if (_comp == NULL) return 0;
