@@ -1,7 +1,7 @@
 ﻿/*
     Файл реализации односвязного списка c_forward_list
     Разработка, отладка и сборка производилась в:
-    ОС: в Windows 10/x64
+    ОС: Windows 10/x64
     IDE: Code::Blocks 17.12
     Компилятор: default Code::Blocks 17.12 MinGW
 
