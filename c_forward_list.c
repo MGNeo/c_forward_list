@@ -1,4 +1,18 @@
-﻿#include "c_forward_list.h"
+﻿/*
+    Файл реализации односвязного списка c_forward_list
+    Разработка, отладка и сборка производилась в:
+    ОС: в Windows 10/x64
+    IDE: Code::Blocks 17.12
+    Компилятор: default Code::Blocks 17.12 MinGW
+
+    Разработчик: Глухманюк Максим
+    Эл. почта: mgneo@yandex.ru
+    Место: Российская Федерация, Самарская область, Сызрань
+    Дата: 16.03.2018
+    Лицензия: GPLv3
+*/
+
+#include "c_forward_list.h"
 
 // Создает новый односвязный список.
 // В случае ошибки возвращает NULL.
@@ -66,7 +80,7 @@ void *c_forward_list_push_front(c_forward_list *const _list,
     const size_t new_node_size = sizeof(void*) + _data_size;
     if (new_node_size < _data_size) return NULL;
 
-    void *new_node = malloc(new_node_size);
+    void *const new_node = malloc(new_node_size);
     if (new_node == NULL) return NULL;
 
     *((void**)new_node) = _list->head;
@@ -113,7 +127,7 @@ void *c_forward_list_push_back(c_forward_list *const _list,
     const size_t new_node_size = sizeof(void*) + _data_size;
     if (new_node_size < _data_size) return NULL;
 
-    void *new_node = malloc(new_node_size);
+    void *const new_node = malloc(new_node_size);
     if (new_node == NULL) return NULL;
 
     void *last_node = &_list->head;
@@ -218,7 +232,7 @@ void *c_forward_list_insert(c_forward_list *const _list,
     const size_t new_node_size = sizeof(void*) + _data_size;
     if (new_node_size < _data_size) return NULL;
 
-    void *new_node = malloc(new_node_size);
+    void *const new_node = malloc(new_node_size);
     if (new_node == NULL) return NULL;
 
     void *prev_node = &_list->head,
