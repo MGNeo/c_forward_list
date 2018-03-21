@@ -18,7 +18,7 @@
 // В случае ошибки возвращает NULL.
 c_forward_list *c_forward_list_create(void)
 {
-    c_forward_list *new_forward_list = (c_forward_list*)malloc(sizeof(c_forward_list));
+    c_forward_list *const new_forward_list = (c_forward_list*)malloc(sizeof(c_forward_list));
     if (new_forward_list == NULL) return NULL;
 
     new_forward_list->head = NULL;
