@@ -41,7 +41,7 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list,
 
         if (_del_func != NULL)
         {
-            while(select_node != NULL)
+            while (select_node != NULL)
             {
                 delete_node = select_node;
                 select_node = *((void**)select_node);
@@ -51,7 +51,7 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _list,
                 free(delete_node);
             }
         } else {
-            while(select_node != NULL)
+            while (select_node != NULL)
             {
                 delete_node = select_node;
                 select_node = *((void**)select_node);
@@ -347,7 +347,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
         for (size_t i = 0; (i < _list->nodes_count) && (count <  i_index); ++i)
         {
             next_node = *((void**)select_node);
-            if(i == _indexes[count])
+            if (i == _indexes[count])
             {
                 _del_func((void**)select_node + 1);
                 free(select_node);
@@ -362,7 +362,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _list,
         for (size_t i = 0; (i < _list->nodes_count) && (count < i_index); ++i)
         {
             next_node = *((void**)select_node);
-            if(i == _indexes[count])
+            if (i == _indexes[count])
             {
                 free(select_node);
                 *((void**)prev_node) = next_node;
@@ -389,7 +389,7 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _list,
     if (_list->nodes_count == 0) return 1;
 
     void *select_node = _list->head;
-    while(select_node != NULL)
+    while (select_node != NULL)
     {
         _func((void**)select_node + 1);
 
@@ -416,7 +416,7 @@ size_t c_forward_list_remove_few(c_forward_list *const _list,
          *prev_node = &_list->head,
          *next_node = NULL;
 
-    while(select_node != NULL)
+    while (select_node != NULL)
     {
         next_node = *((void**)select_node);
 
