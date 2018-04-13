@@ -32,33 +32,9 @@ c_forward_list *c_forward_list_create(void)
 ptrdiff_t c_forward_list_delete(c_forward_list *const _list,
                                 void (*const _del_func)(void *const _data))
 {
-    if (_list == NULL) return -1;
-
-    if (_list->nodes_count > 0)
+    if (c_forward_list_clear(_list, _del_func) < 0)
     {
-        void *select_node = _list->head,
-             *delete_node;
-
-        if (_del_func != NULL)
-        {
-            while (select_node != NULL)
-            {
-                delete_node = select_node;
-                select_node = *((void**)select_node);
-
-                _del_func((void**)delete_node + 1);
-
-                free(delete_node);
-            }
-        } else {
-            while (select_node != NULL)
-            {
-                delete_node = select_node;
-                select_node = *((void**)select_node);
-
-                free(delete_node);
-            }
-        }
+        return -1;
     }
 
     free(_list);
@@ -443,12 +419,14 @@ size_t c_forward_list_remove_few(c_forward_list *const _list,
 }
 
 // Очищает список ото всех узлов.
-// В случае успеха возвращает > 0, в случае ошибки < 0.
+// В случае успешного очищения возвращает > 0.
+// Если очищать не от чего, возвращает 0.
+// В случае ошибки возвращает < 0.
 ptrdiff_t c_forward_list_clear(c_forward_list *const _list,
                                void (*const _del_func)(void *const _data))
 {
     if (_list == NULL) return -1;
-    if (_list->nodes_count == 0) return 1;
+    if (_list->nodes_count == 0) return 0;
 
     void *select_node = _list->head,
          *delete_node;
@@ -468,5 +446,5 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _list,
     _list->head = NULL;
     _list->nodes_count = 0;
 
-    return 2;
+    return 1;
 }
