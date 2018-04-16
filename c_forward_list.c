@@ -416,7 +416,7 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _forward_list,
         select_node = select_node->next;
     }
 
-    return 2;
+    return 1;
 }
 
 // Удаляет из списка узлы, для данных которых _comp возвращает > 0.
