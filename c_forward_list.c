@@ -14,7 +14,7 @@
 
 #include "c_forward_list.h"
 
-// Компаратор для сортировки массива, на который указывает _indexes.
+// Компаратор для сортировки массива с индексами узлов, которые необходимо удалить.
 static int comp_sort(const void *const _a,
                      const void *const _b)
 {
