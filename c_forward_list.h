@@ -22,7 +22,7 @@
 
 typedef struct s_c_forward_list_node
 {
-    struct s_c_forward_list_node *next;
+    struct s_c_forward_list_node *next_node;
     void *data;
 } c_forward_list_node;
 
@@ -35,19 +35,19 @@ typedef struct s_c_forward_list
 c_forward_list *c_forward_list_create(void);
 
 ptrdiff_t c_forward_list_delete(c_forward_list *const _forward_list,
-                                void (*const _del_func)(void *const _data));
+                                void (*const _del_data)(void *const _data));
 
 ptrdiff_t c_forward_list_push_front(c_forward_list *const _forward_list,
                                     const void *const _data);
 
 ptrdiff_t c_forward_list_pop_front(c_forward_list *const _forward_list,
-                                   void (*const _del_func)(void *const _data));
+                                   void (*const _del_data)(void *const _data));
 
 ptrdiff_t c_forward_list_push_back(c_forward_list *const _forward_list,
                                    const void *const _data);
 
 ptrdiff_t c_forward_list_pop_back(c_forward_list *const _forward_list,
-                                  void (*const _del_func)(void *const _data));
+                                  void (*const _del_data)(void *const _data));
 
 ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
                                 const void *const _data,
@@ -55,16 +55,16 @@ ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
 
 ptrdiff_t c_forward_list_erase(c_forward_list *const _forward_list,
                                const size_t _index,
-                               void (*const _del_func)(void *const _data));
+                               void (*const _del_data)(void *const _data));
 
 size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
                                 size_t *const _indexes,
                                 const size_t _indexes_count,
-                                void (*const _del_func)(void *const _data));
+                                void (*const _del_data)(void *const _data));
 
 size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
-                                 size_t (*const _pred)(const void *const _data),
-                                 void (*const _del_funct)(void *const _data));
+                                 size_t (*const _pred_data)(const void *const _data),
+                                 void (*const _del_data)(void *const _data));
 
 void *c_forward_list_front(const c_forward_list *const _forward_list);
 
@@ -74,9 +74,9 @@ void *c_forward_list_at(const c_forward_list *const _forward_list,
 void *c_forward_list_back(const c_forward_list *const _forward_list);
 
 ptrdiff_t c_forward_list_for_each(c_forward_list *const _forward_list,
-                                  void (*const _func)(void *const _data));
+                                  void (*const _action_data)(void *const _data));
 
 ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
-                               void (*const _del_func)(void *const _data));
+                               void (*const _del_data)(void *const _data));
 
 #endif
