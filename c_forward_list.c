@@ -281,7 +281,7 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _forward_list,
     if (_index >= _forward_list->nodes_count) return -2;
 
     c_forward_list_node *delete_node = _forward_list->head,
-                        *prev_node;
+                        *prev_node = NULL;
 
     for (size_t i = 0; i < _index; ++i)
     {
@@ -341,7 +341,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
     // Теперь i_index == количеству корректных уникальных индексов.
     i_index += 1;
     // Контроль переполнения.
-    if (i_index < i_index - 1) return NULL;// Не, ну а вдруг...)
+    if (i_index < i_index - 1) return 0;// Не, ну а вдруг...)
 
     size_t count = 0;
 
