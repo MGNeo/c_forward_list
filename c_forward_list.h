@@ -15,9 +15,6 @@
 #ifndef C_FORWARD_LIST_H
 #define C_FORWARD_LIST_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <stddef.h>
 
 typedef struct s_c_forward_list_node
