@@ -66,4 +66,6 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _forward_list,
 ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
                                void (*const _del_data)(void *const _data));
 
+size_t c_forward_list_nodes_count(const c_forward_list *const _forward_list);
+
 #endif

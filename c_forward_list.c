@@ -557,3 +557,15 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
 
     return 1;
 }
+
+// Возвращает количество узлов односвязного списка.
+// В случае ошибки возвращает 0.
+size_t c_forward_list_nodes_count(const c_forward_list *const _forward_list)
+{
+    if (_forward_list == NULL)
+    {
+        return 0;
+    }
+
+    return _forward_list->nodes_count;
+}
