@@ -17,8 +17,6 @@
 
 #include <stddef.h>
 
-typedef struct s_c_forward_list_node c_forward_list_node;
-
 typedef struct s_c_forward_list c_forward_list;
 
 c_forward_list *c_forward_list_create(void);

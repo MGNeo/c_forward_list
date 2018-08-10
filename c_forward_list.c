@@ -18,6 +18,8 @@
 
 #include "c_forward_list.h"
 
+typedef struct s_c_forward_list_node c_forward_list_node;
+
 struct s_c_forward_list_node
 {
     struct s_c_forward_list_node *next_node;
