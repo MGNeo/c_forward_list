@@ -18,6 +18,18 @@
 
 #include "c_forward_list.h"
 
+struct s_c_forward_list_node
+{
+    struct s_c_forward_list_node *next_node;
+    void *data;
+};
+
+struct s_c_forward_list
+{
+    c_forward_list_node *head;
+    size_t nodes_count;
+};
+
 // Компаратор для сортировки массива с индексами узлов, которые необходимо удалить.
 static int comp_sort(const void *const _index_a,
                      const void *const _index_b)

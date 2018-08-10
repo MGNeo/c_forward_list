@@ -17,17 +17,9 @@
 
 #include <stddef.h>
 
-typedef struct s_c_forward_list_node
-{
-    struct s_c_forward_list_node *next_node;
-    void *data;
-} c_forward_list_node;
+typedef struct s_c_forward_list_node c_forward_list_node;
 
-typedef struct s_c_forward_list
-{
-    c_forward_list_node *head;
-    size_t nodes_count;
-} c_forward_list;
+typedef struct s_c_forward_list c_forward_list;
 
 c_forward_list *c_forward_list_create(void);
 
