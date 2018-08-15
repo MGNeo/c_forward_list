@@ -367,53 +367,49 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
                         *select_node = _forward_list->head,
                         *next_node = NULL;
 
-    if (_del_data!= NULL)
+    // Макросы дублирования кода для исключения проверки из циклов.
+
+    // Открытие циклов.
+    #define C_FORWARD_LIST_ERASE_FEW_BEGIN\
+        for (size_t i = 0; (i < _forward_list->nodes_count) && (count <  i_index); ++i)\
+        {\
+            next_node = select_node->next_node;\
+            if (i == _indexes[count])\
+            {
+
+    // Закрытие циклов.
+    #define C_FORWARD_LIST_ERASE_FEW_END\
+                free(select_node);\
+                if (prev_node == NULL)\
+                {\
+                    _forward_list->head = next_node;\
+                } else {\
+                    prev_node->next_node = next_node;\
+                }\
+                ++count;\
+            } else {\
+                prev_node = select_node;\
+            }\
+            select_node = next_node;\
+        }
+
+    // Функция удаления данных узла задана.
+    if (_del_data != NULL)
     {
-        for (size_t i = 0; (i < _forward_list->nodes_count) && (count <  i_index); ++i)
-        {
-            next_node = select_node->next_node;
-            if (i == _indexes[count])
-            {
-                _del_data(select_node->data);
-                free(select_node);
+       C_FORWARD_LIST_ERASE_FEW_BEGIN
 
-                if (prev_node == NULL)
-                {
-                    _forward_list->head = next_node;
-                } else {
-                    prev_node->next_node = next_node;
-                }
+       _del_data(select_node->data);
 
-                ++count;
-            } else {
-                prev_node = select_node;
-            }
-            select_node = next_node;
-        }
+       C_FORWARD_LIST_ERASE_FEW_END
     } else {
-        // Дублирование кода, чтобы на каждом узле не проверять,
-        // задана ли функция удаления данных.
-        for (size_t i = 0; (i < _forward_list->nodes_count) && (count <  i_index); ++i)
-        {
-            next_node = select_node->next_node;
-            if (i == _indexes[count])
-            {
-                free(select_node);
+        // Функция удаления данных узла не задана.
+        C_FORWARD_LIST_ERASE_FEW_BEGIN
 
-                if (prev_node == NULL)
-                {
-                    _forward_list->head = next_node;
-                } else {
-                    prev_node->next_node = next_node;
-                }
-
-                ++count;
-            } else {
-                prev_node = select_node;
-            }
-            select_node = next_node;
-        }
+        C_FORWARD_LIST_ERASE_FEW_END
     }
+
+    #undef C_FORWARD_LIST_ERASE_FEW_BEGIN
+    #undef C_FORWARD_LIST_ERASE_FEW_END
 
     _forward_list->nodes_count -= count;
 
@@ -460,57 +456,51 @@ size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
                         *select_node = _forward_list->head,
                         *next_node = NULL;
 
+    // Макросы дублирования кода для избавления от проверок внутри циклов.
+
+    // Открытие циклов.
+    #define C_FORWARD_LIST_REMOVE_FEW_BEGIN\
+    while (select_node != NULL)\
+    {\
+        next_node = select_node->next_node;\
+        if (_pred_data(select_node->data) > 0)\
+        {
+
+    // Закрытие циклов.
+    #define C_FORWARD_LIST_REMOVE_FEW_END\
+            free(select_node);\
+            ++count;\
+            if (prev_node == NULL)\
+            {\
+                _forward_list->head = next_node;\
+            } else {\
+                prev_node->next_node = next_node;\
+            }\
+        } else {\
+            prev_node = select_node;\
+        }\
+        select_node = next_node;\
+    }
+
+    // Закрытие циклов.
+
+    // Функция удаления данных задана.
     if (_del_data != NULL)
     {
-        while (select_node != NULL)
-        {
-            next_node = select_node->next_node;
+        C_FORWARD_LIST_REMOVE_FEW_BEGIN
 
-            if (_pred_data(select_node->data) > 0)
-            {
-                _del_data(select_node->data);
-                free(select_node);
+        _del_data(select_node->data);
 
-                ++count;
-
-                if (prev_node == NULL)
-                {
-                    _forward_list->head = next_node;
-                } else {
-                    prev_node->next_node = next_node;
-                }
-            } else {
-                prev_node = select_node;
-            }
-
-            select_node = next_node;
-        }
+        C_FORWARD_LIST_REMOVE_FEW_END
     } else {
-        // Дублирование кода, чтобы на каждом узле не проверять,
-        // задана ли функция удаления.
-        while (select_node != NULL)
-        {
-            next_node = select_node->next_node;
+        // Функция удаления данных не задана.
+        C_FORWARD_LIST_REMOVE_FEW_BEGIN
 
-            if (_pred_data(select_node->data) > 0)
-            {
-                free(select_node);
-
-                ++count;
-
-                if (prev_node == NULL)
-                {
-                    _forward_list->head = next_node;
-                } else {
-                    prev_node->next_node = next_node;
-                }
-            } else {
-                prev_node = select_node;
-            }
-
-            select_node = next_node;
-        }
+        C_FORWARD_LIST_REMOVE_FEW_END
     }
+
+    #undef C_FORWARD_LIST_REMOVE_FEW_BEGIN
+    #undef C_FORWARD_LIST_REMOVE_FEW_END
 
     _forward_list->nodes_count -= count;
 
@@ -530,27 +520,37 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
     c_forward_list_node *select_node = _forward_list->head,
                         *delete_node;
 
+    // Макросы дублирования кода для исключения проверок внутри цикла.
+
+    // Открытие цикла.
+    #define C_FORWARD_LIST_CLEAR_BEGIN\
+    while (select_node != NULL)\
+    {\
+        delete_node = select_node;\
+        select_node = select_node->next_node;
+
+    // Закрытие цикла.
+    #define C_FORWARD_LIST_CLEAR_END\
+        free(delete_node);\
+    }
+
+    // Функция удаления данных узла задана.
     if (_del_data != NULL)
     {
-        while (select_node != NULL)
-        {
-            delete_node = select_node;
-            select_node = select_node->next_node;
+        C_FORWARD_LIST_CLEAR_BEGIN
 
-            _del_data( delete_node->data );
-            free(delete_node);
-        }
+        _del_data( delete_node->data );
+
+        C_FORWARD_LIST_CLEAR_END
     } else {
-        // Дублирование кода, чтобы на каждом узле не проверять,
-        // задана ли функция удаления.
-        while (select_node != NULL)
-        {
-            delete_node = select_node;
-            select_node = select_node->next_node;
+        // Функция удаления данных узла не задана.
+        C_FORWARD_LIST_CLEAR_BEGIN
 
-            free(delete_node);
-        }
+        C_FORWARD_LIST_CLEAR_END
     }
+
+    #undef C_FORWARD_LIST_CLEAR_BEGIN
+    #undef C_FORWARD_LIST_CLEAR_END
 
     _forward_list->head = NULL;
     _forward_list->nodes_count = 0;
