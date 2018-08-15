@@ -367,9 +367,9 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
                         *select_node = _forward_list->head,
                         *next_node = NULL;
 
-    // Макросы дублирования кода для исключения проверки из циклов.
+    // Макросы дублирования кода для исключения проверки из цикла.
 
-    // Открытие циклов.
+    // Открытие цикла.
     #define C_FORWARD_LIST_ERASE_FEW_BEGIN\
         for (size_t i = 0; (i < _forward_list->nodes_count) && (count <  i_index); ++i)\
         {\
@@ -377,7 +377,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
             if (i == _indexes[count])\
             {
 
-    // Закрытие циклов.
+    // Закрытие цикла.
     #define C_FORWARD_LIST_ERASE_FEW_END\
                 free(select_node);\
                 if (prev_node == NULL)\
@@ -456,9 +456,9 @@ size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
                         *select_node = _forward_list->head,
                         *next_node = NULL;
 
-    // Макросы дублирования кода для избавления от проверок внутри циклов.
+    // Макросы дублирования кода для избавления от проверок внутри цикла.
 
-    // Открытие циклов.
+    // Открытие цикла.
     #define C_FORWARD_LIST_REMOVE_FEW_BEGIN\
     while (select_node != NULL)\
     {\
@@ -466,7 +466,7 @@ size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
         if (_pred_data(select_node->data) > 0)\
         {
 
-    // Закрытие циклов.
+    // Закрытие цикла.
     #define C_FORWARD_LIST_REMOVE_FEW_END\
             free(select_node);\
             ++count;\
