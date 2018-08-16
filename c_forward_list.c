@@ -371,15 +371,18 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
 
     // Открытие цикла.
     #define C_FORWARD_LIST_ERASE_FEW_BEGIN\
+        /* Идем по списку */\
         for (size_t i = 0; (i < _forward_list->nodes_count) && (count <  i_index); ++i)\
         {\
             next_node = select_node->next_node;\
+            /* Если порядковый индекс узла есть в массиве индексов */\
             if (i == _indexes[count])\
             {
 
     // Закрытие цикла.
     #define C_FORWARD_LIST_ERASE_FEW_END\
                 free(select_node);\
+                /* Сшиваем разрыв */\
                 if (prev_node == NULL)\
                 {\
                     _forward_list->head = next_node;\
@@ -460,9 +463,11 @@ size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
 
     // Открытие цикла.
     #define C_FORWARD_LIST_REMOVE_FEW_BEGIN\
+    /* Обходим все узлы списка */\
     while (select_node != NULL)\
     {\
         next_node = select_node->next_node;\
+        /* Если предикат говорит, что узел с такими данными необходимо удалить */\
         if (_pred_data(select_node->data) > 0)\
         {
 
@@ -470,6 +475,7 @@ size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
     #define C_FORWARD_LIST_REMOVE_FEW_END\
             free(select_node);\
             ++count;\
+            /* Сшиваем разрыв */\
             if (prev_node == NULL)\
             {\
                 _forward_list->head = next_node;\
@@ -524,6 +530,7 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
 
     // Открытие цикла.
     #define C_FORWARD_LIST_CLEAR_BEGIN\
+    /* Обходим все узлы списка и удаляем их */\
     while (select_node != NULL)\
     {\
         delete_node = select_node;\
