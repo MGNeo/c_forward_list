@@ -86,7 +86,8 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _forward_list,
 
 // Вставляет в начало списка новый узел.
 // Не позволяет вставлять узел с указателем на NULL.
-// В случае успеха возвращает > 0, иначе < 0.
+// В случае успеха возвращает > 0, данные захватываются списком.
+// В случае ошибки возвращает < 0, данные не захватываются связным списком.
 ptrdiff_t c_forward_list_push_front(c_forward_list *const _forward_list,
                                     const void *const _data)
 {
@@ -133,7 +134,8 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _forward_list,
 
 // Вставляет в конец списка новый узел.
 // Не позволяет вставлять узел с указателем на NULL.
-// В случае успеха возвращает > 0, иначе < 0.
+// В случае успеха возвращает > 0, данные захватываются списком.
+// В случае ошибки возвращает < 0, данные не захватываются списком.
 ptrdiff_t c_forward_list_push_back(c_forward_list *const _forward_list,
                                    const void *const _data)
 {
@@ -204,7 +206,7 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Возвращает указатель на данные, которые связаны с первым узлом списка.
+// Возвращает указатель на данные первого узла списка.
 // В случае ошибки возвращает NULL.
 void *c_forward_list_front(const c_forward_list *const _forward_list)
 {
@@ -248,8 +250,8 @@ void *c_forward_list_back(const c_forward_list *const _forward_list)
 }
 
 // Вставка в заданную позицию нового узла.
-// В случае успеха возвращает > 0.
-// В случае ошибки возвращает < 0.
+// В случае успеха возвращает > 0, данные захватываются списком.
+// В случае ошибки возвращает < 0, данные не захватываются списком.
 // Не позволяет вставлять узел с указателем на NULL.
 // Позволяет вставлять в пустой список, если _index = 0;
 ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
