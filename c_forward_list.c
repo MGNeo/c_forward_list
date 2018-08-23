@@ -70,7 +70,8 @@ c_forward_list *c_forward_list_create(void)
 }
 
 // Удаляет односвязный список.
-// В случае успеха возвращает > 0, иначе < 0.
+// В случае успеха возвращает > 0.
+// В случае ошибки возвращает < 0.
 ptrdiff_t c_forward_list_delete(c_forward_list *const _forward_list,
                                 void (*const _del_data)(void *const _data))
 {
@@ -84,8 +85,8 @@ ptrdiff_t c_forward_list_delete(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Вставляет в начало списка новый узел.
-// Не позволяет вставлять узел с указателем на NULL.
+// Добавляет данные в начало списка.
+// Не позволяет добавлять NULL.
 // В случае успеха возвращает > 0, данные захватываются списком.
 // В случае ошибки возвращает < 0, данные не захватываются связным списком.
 ptrdiff_t c_forward_list_push_front(c_forward_list *const _forward_list,
@@ -107,9 +108,9 @@ ptrdiff_t c_forward_list_push_front(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Уничтожает первый узел списка.
-// В случае успешного уничтожения возвращает > 0.
-// Если уничтожать нечего, возвращает 0.
+// Убирает данные из начала списка.
+// В случае успешного убирания возвращает > 0.
+// Если список пуст, возвращает 0.
 // В случае ошибки возвращает < 0.
 ptrdiff_t c_forward_list_pop_front(c_forward_list *const _forward_list,
                                    void (*const _del_data)(void *const _data))
@@ -132,8 +133,8 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Вставляет в конец списка новый узел.
-// Не позволяет вставлять узел с указателем на NULL.
+// Добавляет данные в конец списка.
+// Не позволяет убирать NULL.
 // В случае успеха возвращает > 0, данные захватываются списком.
 // В случае ошибки возвращает < 0, данные не захватываются списком.
 ptrdiff_t c_forward_list_push_back(c_forward_list *const _forward_list,
@@ -169,9 +170,9 @@ ptrdiff_t c_forward_list_push_back(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Уничтожает последний узел списка.
-// В случае успешного уничтожения возвращает > 0.
-// Если уничтожать нечего, возвращает 0.
+// Убирает данные с конца связного списка.
+// В случае успешного убирания возвращает > 0.
+// Если список пуст, возвращает 0.
 // В случае ошибки возвращает < 0.
 ptrdiff_t c_forward_list_pop_back(c_forward_list *const _forward_list,
                                   void (*const _del_data)(void *const _data))
@@ -206,7 +207,7 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Возвращает указатель на данные первого узла списка.
+// Обращается к данным в начале писка.
 // В случае ошибки возвращает NULL.
 void *c_forward_list_front(const c_forward_list *const _forward_list)
 {
@@ -216,7 +217,7 @@ void *c_forward_list_front(const c_forward_list *const _forward_list)
     return _forward_list->head->data;
 }
 
-// Возвращает указатель на данные, которые связаны с узлом с заданным индексом.
+// Обращается к данным с заданным порядковым индексом, от начала списка, от 0.
 // В случае ошибки возвращает NULL.
 void *c_forward_list_at(const c_forward_list *const _forward_list,
                         const size_t _index)
@@ -233,7 +234,7 @@ void *c_forward_list_at(const c_forward_list *const _forward_list,
     return select_node->data;
 }
 
-// Возвращает указатель на данные, связанные с последним узлом.
+// Обращается к данным в конце списка.
 // В случае ошибки возвращает NULL.
 void *c_forward_list_back(const c_forward_list *const _forward_list)
 {
@@ -249,11 +250,11 @@ void *c_forward_list_back(const c_forward_list *const _forward_list)
     return select_node->data;
 }
 
-// Вставка в заданную позицию нового узла.
+// Добавляет данные в заданную позицию списка, от начала, от нуля.
 // В случае успеха возвращает > 0, данные захватываются списком.
 // В случае ошибки возвращает < 0, данные не захватываются списком.
-// Не позволяет вставлять узел с указателем на NULL.
-// Позволяет вставлять в пустой список, если _index = 0;
+// Не позволяет добавлять NULL.
+// Позволяет добавлять в пустой список, если _index = 0;
 ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
                                 const void *const _data,
                                 const size_t _index)
@@ -291,13 +292,16 @@ ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Удаляет узел с заданным индексом.
-// В случае успеха возвращает > 0, иначе < 0.
+// Убирает данные с заданным индексом, от начала, от 0.
+// В случае успеха возвращает > 0.
+// Если список пуст, возвращает 0.
+// В случае ошибки возвращает < 0.
 ptrdiff_t c_forward_list_erase(c_forward_list *const _forward_list,
                                const size_t _index,
                                void (*const _del_data)(void *const _data))
 {
     if (_forward_list == NULL) return -1;
+    if (_forward_list->nodes_count == 0) return 0;
     if (_index >= _forward_list->nodes_count) return -2;
 
     c_forward_list_node *delete_node = _forward_list->head,
@@ -327,10 +331,10 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Удаляет узлы с заданными порядковыми индексами.
-// Массив, на который указывает _indexes, сортируется.
+// Убирает данные с заданными порядковыми индексами, от начала, от 0.
+// Массив индексов сортируется.
 // Наличие несуществующих или одинаковых индексов не считается ошибкой.
-// В случае успеха функция возвращает кол-во удаленных узлов.
+// В случае успеха функция возвращает убранных данных.
 // В случае ошибки 0.
 size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
                                 size_t *const _indexes,
@@ -421,7 +425,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
     return count;
 }
 
-// Проходит по всему списку и выполняет над данными каждого списка заданные действия.
+// Проходит по всему списку и выполняет над всеми данными заданные действия.
 // В случае успешного выполнения возвращает > 0.
 // Если список пуст, возвращает 0.
 // В случае ошибки возвращает < 0.
@@ -444,8 +448,8 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Удаляет из списка узлы, для данных которых _comp возвращает > 0.
-// Возвращает кол-во удаленных узлов.
+// Убирает все данные, для данных которых _comp возвращает > 0.
+// Возвращает кол-во убранных данных.
 // В случае ошибки возвращает 0.
 size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
                                  size_t (*const _pred_data)(const void *const _data),
@@ -515,7 +519,7 @@ size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
     return count;
 }
 
-// Очищает список ото всех узлов.
+// Очищает список ото всех данных.
 // В случае успешного очищения возвращает > 0.
 // Если очищать не от чего, возвращает 0.
 // В случае ошибки возвращает < 0.
@@ -567,7 +571,7 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Возвращает количество узлов односвязного списка.
+// Возвращает количество данных в списке.
 // В случае ошибки возвращает 0.
 size_t c_forward_list_nodes_count(const c_forward_list *const _forward_list)
 {
