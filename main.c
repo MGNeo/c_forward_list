@@ -4,81 +4,127 @@
 
 #include "c_forward_list.h"
 
-// Проверки возвращаемых значений не выполняются для упрощения.
-
-// Функция печати содержимого узла.
-void print_func_f(void *const _data)
+typedef struct s_object
 {
-    if (_data == NULL) return;
+    int i;
+    float f;
+} object;
 
-    const float data = *((float*)_data);
-    printf("%f\n", data);
-    return;
-}
-
-// Функция удаления данных узла.
-void del_func_f(void *const _data)
+// Функция вывода содержимого элемента односвязного списка типа object.
+void print_object(void *const _data)
 {
-    if (_data == NULL) return;
-
-    free(_data);
-    return;
-}
-
-// Функция определения необходимости удаления узла по его данным.
-size_t pred_func_f(const void *const _data)
-{
-    if (_data == NULL) return 0;
-
-    const float data = *((float*)_data);
-    if (data > 5.f)
+    if (_data == NULL)
     {
-        return 1;
+        return;
     }
-    return 0;
+
+    const object *const obj = (object*)_data;
+
+    printf("i: %i, f: %f\n", obj->i, obj->f);
 }
 
 int main(int argc, char **argv)
 {
-    // Создание односвязного списка.
-    c_forward_list *forward_list = c_forward_list_create();
+    size_t error;
+    c_forward_list *forward_list;
 
-    // Добавление в конец десяти элементов.
-    const size_t insert_count = 10;
-    float *data;
-    for (size_t i = 0; i < insert_count; ++i)
+    // Пытаемся создать односвязный список.
+    forward_list = c_forward_list_create(&error);
+
+    // Если не удалось создать односвязный список, выводим причину ошибки.
+    if (forward_list == NULL)
     {
-        data = (float*)malloc(sizeof(float));
-        *data = i * 1.1f;
-        c_forward_list_push_back(forward_list, data);
+        printf("error: %Iu\n", error);
+        printf("Program end.\n");
+        getchar();
+        return -1;
     }
 
-    // Вывод содержимого односвязного списка.
-    c_forward_list_for_each(forward_list, print_func_f);
-    printf("\n");
+    // Вставляем в конец односвязного списка 10 элементов.
+    for (size_t i = 0; i < 10; ++i)
+    {
+        // Пытаемся выделить память под элемент.
+        object *const obj = malloc(sizeof(object));
+        // Если не удалось выделить память под элемент.
+        if (obj == NULL)
+        {
+            printf("malloc(): NULL\n");
+            printf("Program end.\n");
+            getchar();
+            return -2;
+        }
+        // Инициализируем элемент.
+        obj->i = i;
+        obj->f = i + 3.14f;
 
-    // Удаление нескольких элементов с заданными индексами,
-    // индексы хранятся в массиве в неупорядоченном виде.
-    const size_t indexes_count = 3;
-    size_t indexes[indexes_count];
-    indexes[0] = 3;
-    indexes[1] = 9;
-    indexes[2] = 1;
-    c_forward_list_erase_few(forward_list, indexes, indexes_count, del_func_f);
+        // Пытаемся добавить элемент в конец односвязного списка.
+        const ptrdiff_t r_code = c_forward_list_push_back(forward_list, obj);
+        // Если не удалось добавить элемент в конец односвязного списка, выводим причину ошибки.
+        if (r_code < 0)
+        {
+            printf("r_code: %Id\n", r_code);
+            printf("Program end.\n");
+            getchar();
+            return -3;
+        }
+    }
 
-    // Вывод содержимого односвязного списка.
-    c_forward_list_for_each(forward_list, print_func_f);
-    printf("\n");
+    // Используя функцию обхода, выведем содержимое каждого элемента.
+    {
+        const ptrdiff_t r_code = c_forward_list_for_each(forward_list, print_object);
+        // Если произошла ошибка, покажем ее.
+        if (r_code < 0)
+        {
+            printf("r_code: %Id\n", r_code);
+            printf("Program end.\n");
+            getchar();
+            return -6;
+        }
+    }
 
-    // Удаление узлов, чьи данные удовлетворяют условиям.
-    c_forward_list_remove_few(forward_list, pred_func_f, del_func_f);
+    // Удалим узлы с индексами: 0, 1, 3, 2, 99
+    //
+    {
+        size_t indexes[5] = {0, 1, 3, 2, 99};
+        error = 0;
+        const size_t d_count = c_forward_list_erase_few(forward_list, indexes, 5, free, &error);
+        // Если возникла ошибка, покажем ее.
+        if ( (d_count == 0) && (error > 0) )
+        {
+            printf("error: %Iu\n", error);
+            printf("Program end.\n");
+            getchar();
+            return -7;
+        }
+        // Покажем, сколько элементов было удалено.
+        printf("d_count: %Iu\n", d_count);
+    }
 
-    // Вывод содержимого односвязного списка.
-    c_forward_list_for_each(forward_list, print_func_f);
-    printf("\n");
+    // Используя функцию обхода, выведем содержимое каждого элемента.
+    {
+        const ptrdiff_t r_code = c_forward_list_for_each(forward_list, print_object);
+        // Если произошла ошибка, покажем ее.
+        if (r_code < 0)
+        {
+            printf("r_code: %Id\n", r_code);
+            printf("Program end.\n");
+            getchar();
+            return -8;
+        }
+    }
 
-    // Удаление односвязного списка.
-    c_forward_list_delete(forward_list, del_func_f);
+    // Удалим связный список.
+    {
+        const ptrdiff_t r_code = c_forward_list_delete(forward_list, free);
+        // Если возникла ошибка, покажем ее.
+        if (r_code < 0)
+        {
+            printf("r_code: %Id\n", r_code);
+            printf("Program end.\n");
+            getchar();
+            return -9;
+        }
+    }
 
     getchar();
     return 0;

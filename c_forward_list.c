@@ -32,6 +32,16 @@ struct s_c_forward_list
     size_t nodes_count;
 };
 
+// Если расположение задано, в него помещается код.
+static void error_set(size_t *const _error,
+                      const size_t _code)
+{
+    if (_error != NULL)
+    {
+        *_error = _code;
+    }
+}
+
 // Компаратор для сортировки массива с индексами узлов, которые необходимо удалить.
 static int comp_sort(const void *const _index_a,
                      const void *const _index_b)
@@ -57,11 +67,16 @@ static int comp_sort(const void *const _index_a,
 }
 
 // Создает новый односвязный список.
-// В случае ошибки возвращает NULL.
-c_forward_list *c_forward_list_create(void)
+// В случае ошибки возвращает NULL, и если _error != NULL, в заданное расположение помещается
+// код причины ошибки (> 0).
+c_forward_list *c_forward_list_create(size_t *const _error)
 {
-    c_forward_list *const new_forward_list = (c_forward_list*)malloc(sizeof(c_forward_list));
-    if (new_forward_list == NULL) return NULL;
+    c_forward_list *const new_forward_list = malloc(sizeof(c_forward_list));
+    if (new_forward_list == NULL)
+    {
+        error_set(_error, 1);
+        return NULL;
+    }
 
     new_forward_list->head = NULL;
     new_forward_list->nodes_count = 0;
@@ -96,7 +111,7 @@ ptrdiff_t c_forward_list_push_front(c_forward_list *const _forward_list,
     if (_data == NULL) return -2;
     if (_forward_list->nodes_count == SIZE_MAX) return -3;// Не, ну а вдруг...)
 
-    c_forward_list_node *const new_node = (c_forward_list_node*)malloc(sizeof(c_forward_list_node));
+    c_forward_list_node *const new_node = malloc(sizeof(c_forward_list_node));
     if (new_node == NULL) return -4;
 
     new_node->next_node = _forward_list->head;
@@ -134,7 +149,7 @@ ptrdiff_t c_forward_list_pop_front(c_forward_list *const _forward_list,
 }
 
 // Добавляет данные в конец списка.
-// Не позволяет убирать NULL.
+// Не позволяет добавлять NULL.
 // В случае успеха возвращает > 0, данные захватываются списком.
 // В случае ошибки возвращает < 0, данные не захватываются списком.
 ptrdiff_t c_forward_list_push_back(c_forward_list *const _forward_list,
@@ -144,7 +159,7 @@ ptrdiff_t c_forward_list_push_back(c_forward_list *const _forward_list,
     if (_data == NULL) return -2;
     if (_forward_list->nodes_count == SIZE_MAX) return -3;// Не, ну а вдруг...)
 
-    c_forward_list_node *const new_node = (c_forward_list_node*)malloc(sizeof(c_forward_list_node));
+    c_forward_list_node *const new_node = malloc(sizeof(c_forward_list_node));
     if (new_node == NULL) return -4;
 
     new_node->next_node = NULL;
@@ -207,22 +222,40 @@ ptrdiff_t c_forward_list_pop_back(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Обращается к данным в начале писка.
-// В случае ошибки возвращает NULL.
-void *c_forward_list_front(const c_forward_list *const _forward_list)
+// Обращается к данным в начале списка.
+// В случае ошибки возвращает NULL, и если _error != NULL, в заданное расположение
+// помещается код причины ошибки(> 0).
+// Если список пуст, возвращает NULL.
+// Так как функция может возвращать NULL и в случае успеха, и в случае ошибки, для детектирования
+// ошибки перед вызовом функции необходимо поместить 0 в заданное расположение ошибки.
+void *c_forward_list_front(const c_forward_list *const _forward_list,
+                           size_t *const _error)
 {
-    if (_forward_list == NULL) return NULL;
+    if (_forward_list == NULL)
+    {
+        error_set(_error, 1);
+        return NULL;
+    }
     if (_forward_list->nodes_count == 0) return NULL;
 
     return _forward_list->head->data;
 }
 
 // Обращается к данным с заданным порядковым индексом, от начала списка, от 0.
-// В случае ошибки возвращает NULL.
+// В случае ошибки возвращает NULL, и если _error != NULL, в заданное расположение
+// помещается код причины ошибки (> 0).
+// Если индекс оказался >= количеству узлов, функция возвращает NULL, это не считается ошибкой.
+// Так как функция может возвращать NULL и в случае успеха, и в случае ошибки, для детектирования
+// ошибки перед вызовом функции необходимо поместить 0 в заданное расположение ошибки.
 void *c_forward_list_at(const c_forward_list *const _forward_list,
-                        const size_t _index)
+                        const size_t _index,
+                        size_t *const _error)
 {
-    if (_forward_list == NULL) return NULL;
+    if (_forward_list == NULL)
+    {
+        error_set(_error, 1);
+        return NULL;
+    }
     if (_index >= _forward_list->nodes_count) return NULL;
 
     c_forward_list_node *select_node = _forward_list->head;
@@ -235,10 +268,19 @@ void *c_forward_list_at(const c_forward_list *const _forward_list,
 }
 
 // Обращается к данным в конце списка.
-// В случае ошибки возвращает NULL.
-void *c_forward_list_back(const c_forward_list *const _forward_list)
+// В случае ошибки возвращает NULL, и если _error != NULL, в заданное расположение
+// помещается код причины ошибки (> 0).
+// Если список пуст, функция вернет NULL, это не считается ошибкой.
+// Так как функция может возвращать NULL и в случае успеха, и в случае ошибки, для детектирования
+// ошибки перед вызовом функции необходимо поместить 0 в заданное расположение ошибки.
+void *c_forward_list_back(const c_forward_list *const _forward_list,
+                          size_t *const _error)
 {
-    if (_forward_list == NULL) return NULL;
+    if (_forward_list == NULL)
+    {
+        error_set(_error, 1);
+        return NULL;
+    }
     if (_forward_list->nodes_count == 0) return NULL;
 
     c_forward_list_node *select_node = _forward_list->head;
@@ -252,6 +294,7 @@ void *c_forward_list_back(const c_forward_list *const _forward_list)
 
 // Добавляет данные в заданную позицию списка, от начала, от нуля.
 // В случае успеха возвращает > 0, данные захватываются списком.
+// Если индекс оказался > количества узлов, функция возвращает 0, данные не захватываются списком.
 // В случае ошибки возвращает < 0, данные не захватываются списком.
 // Не позволяет добавлять NULL.
 // Позволяет добавлять в пустой список, если _index = 0;
@@ -262,10 +305,10 @@ ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
     if (_forward_list == NULL) return -1;
     if (_data == NULL) return -2;
     if (_forward_list->nodes_count == SIZE_MAX) return -3;// Не, ну а вдруг...)
-    if (_index > _forward_list->nodes_count) return -4;
+    if (_index > _forward_list->nodes_count) return 0;
 
-    c_forward_list_node *const new_node = (c_forward_list_node*)malloc(sizeof(c_forward_list_node));
-    if (new_node == NULL) return -5;
+    c_forward_list_node *const new_node = malloc(sizeof(c_forward_list_node));
+    if (new_node == NULL) return -4;
 
     new_node->data = (void*)_data;
 
@@ -293,16 +336,15 @@ ptrdiff_t c_forward_list_insert(c_forward_list *const _forward_list,
 }
 
 // Убирает данные с заданным индексом, от начала, от 0.
-// В случае успеха возвращает > 0.
-// Если список пуст, возвращает 0.
+// В случае успешного убирания, возвращает > 0.
+// Если индекс оказался >= количеству узлов, функция возвращает 0.
 // В случае ошибки возвращает < 0.
 ptrdiff_t c_forward_list_erase(c_forward_list *const _forward_list,
                                const size_t _index,
                                void (*const _del_data)(void *const _data))
 {
     if (_forward_list == NULL) return -1;
-    if (_forward_list->nodes_count == 0) return 0;
-    if (_index >= _forward_list->nodes_count) return -2;
+    if (_index >= _forward_list->nodes_count) return 0;
 
     c_forward_list_node *delete_node = _forward_list->head,
                         *prev_node = NULL;
@@ -334,15 +376,26 @@ ptrdiff_t c_forward_list_erase(c_forward_list *const _forward_list,
 // Убирает данные с заданными порядковыми индексами, от начала, от 0.
 // Массив индексов сортируется.
 // Наличие несуществующих или одинаковых индексов не считается ошибкой.
-// В случае успеха функция возвращает убранных данных.
-// В случае ошибки 0.
+// В случае успеха функция возвращает количество убранных данных.
+// В случае ошибки 0, и если _error != NULL, в заданное расположение помещается
+// код причины ошибки (> 0).
+// Так как функция может возвращать 0 и в случае успеха, и в случае ошибки, для детектирования
+// ошибки перед вызовом функции необходимо поместить 0 в заданное расположение ошибки.
 size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
                                 size_t *const _indexes,
                                 const size_t _indexes_count,
-                                void (*const _del_data)(void *const _data))
+                                void (*const _del_data)(void *const _data),
+                                size_t *const _error)
 {
-    if (_forward_list == NULL) return 0;
-    if (_indexes == NULL) return 0;
+    if (_forward_list == NULL)
+    {
+        error_set(_error, 1);
+        return 0;
+    }
+    if (_indexes == NULL)
+    {
+        return 0;
+    }
     if (_indexes_count == 0) return 0;
     if (_forward_list->nodes_count == 0) return 0;
 
@@ -365,7 +418,11 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
     // Теперь i_index == количеству корректных уникальных индексов.
     i_index += 1;
     // Контроль переполнения.
-    if (i_index < i_index - 1) return 0;// Не, ну а вдруг...)
+    if (i_index < i_index - 1)// Не, ну а вдруг...)
+    {
+        error_set(_error, 2);
+        return 0;
+    }
 
     size_t count = 0;
 
@@ -425,7 +482,7 @@ size_t c_forward_list_erase_few(c_forward_list *const _forward_list,
     return count;
 }
 
-// Проходит по всему списку и выполняет над всеми данными заданные действия.
+// Проходит по всем элементам списка (от начала к концу) и выполняет над всеми данными заданные действия.
 // В случае успешного выполнения возвращает > 0.
 // Если список пуст, возвращает 0.
 // В случае ошибки возвращает < 0.
@@ -448,15 +505,27 @@ ptrdiff_t c_forward_list_for_each(c_forward_list *const _forward_list,
     return 1;
 }
 
-// Убирает все данные, для данных которых _comp возвращает > 0.
+// Убирает все данные, для которых _comp возвращает > 0.
 // Возвращает кол-во убранных данных.
-// В случае ошибки возвращает 0.
+// В случае ошибки возвращает 0, и если _error != NULL, в заданное расположение помещается
+// код причины ошибки (> 0).
+// Так как функция может возвращать 0 и в случае успеха, и в случае ошибки, для детектирования
+// ошибки перед вызвом функции необходимо поместить 0 в заданное расположение ошибки.
 size_t c_forward_list_remove_few(c_forward_list *const _forward_list,
                                  size_t (*const _pred_data)(const void *const _data),
-                                 void (*const _del_data)(void *const _data))
+                                 void (*const _del_data)(void *const _data),
+                                 size_t *const _error)
 {
-    if (_forward_list == NULL) return 0;
-    if (_pred_data == NULL) return 0;
+    if (_forward_list == NULL)
+    {
+        error_set(_error, 1);
+        return 0;
+    }
+    if (_pred_data == NULL)
+    {
+        error_set(_error, 2);
+        return 0;
+    }
     if (_forward_list->nodes_count == 0) return 0;
 
     size_t count = 0;
@@ -572,11 +641,16 @@ ptrdiff_t c_forward_list_clear(c_forward_list *const _forward_list,
 }
 
 // Возвращает количество данных в списке.
-// В случае ошибки возвращает 0.
-size_t c_forward_list_nodes_count(const c_forward_list *const _forward_list)
+// В случае ошибки возвращает 0, и если _error != NULL, в заданное расположение
+// помещается код причины ошибки.
+// Так как функция может возвращать 0 и вслучае успеха, и в случае ошибки, для детектирования
+// ошибки перед вызовом функции необходимо поместить 0 в заданное расположение ошибки.
+size_t c_forward_list_nodes_count(const c_forward_list *const _forward_list,
+                                  size_t *const _error)
 {
     if (_forward_list == NULL)
     {
+        error_set(_error, 1);
         return 0;
     }
 
