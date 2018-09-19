@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     // Если не удалось создать односвязный список, выводим причину ошибки.
     if (forward_list == NULL)
     {
-        printf("error: %Iu\n", error);
+        printf("create error: %Iu\n", error);
         printf("Program end.\n");
         getchar();
         return -1;
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         // Если не удалось добавить элемент в конец односвязного списка, выводим причину ошибки.
         if (r_code < 0)
         {
-            printf("r_code: %Id\n", r_code);
+            printf("push back error, r_code: %Id\n", r_code);
             printf("Program end.\n");
             getchar();
             return -3;
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
         // Если произошла ошибка, покажем ее.
         if (r_code < 0)
         {
-            printf("r_code: %Id\n", r_code);
+            printf("for each error, r_code: %Id\n", r_code);
             printf("Program end.\n");
             getchar();
             return -6;
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         // Если возникла ошибка, покажем ее.
         if ( (d_count == 0) && (error > 0) )
         {
-            printf("error: %Iu\n", error);
+            printf("erase few error: %Iu\n", error);
             printf("Program end.\n");
             getchar();
             return -7;
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
         // Если произошла ошибка, покажем ее.
         if (r_code < 0)
         {
-            printf("r_code: %Id\n", r_code);
+            printf("for each error, r_code: %Id\n", r_code);
             printf("Program end.\n");
             getchar();
             return -8;
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
         // Если возникла ошибка, покажем ее.
         if (r_code < 0)
         {
-            printf("r_code: %Id\n", r_code);
+            printf("delete error, r_code: %Id\n", r_code);
             printf("Program end.\n");
             getchar();
             return -9;
